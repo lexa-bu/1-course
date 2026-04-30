@@ -1,0 +1,26 @@
+object Form1: TForm1
+  Left = 1020
+  Height = 200
+  Top = 250
+  Width = 200
+  Caption = 'ю спин ми раунд'
+  ClientHeight = 200
+  ClientWidth = 200
+  LCLVersion = '4.2.0.0'
+  OnCreate = FormCreate
+  object PaintBox1: TPaintBox
+    Left = 0
+    Height = 200
+    Top = 0
+    Width = 200
+    Align = alClient
+    Anchors = [akTop, akLeft, akRight]
+    OnPaint = PaintBox1Paint
+  end
+  object Timer1: TTimer
+    Interval = 50
+    OnTimer = Timer1Timer
+    Left = 8
+    Top = 440
+  end
+end

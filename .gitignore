@@ -1,0 +1,28 @@
+# Lazarus / Pascal
+*.exe
+*.ppu
+*.o
+*.lps
+*.compiled
+*.obj
+/lib/
+/backup/
+*.lrs
+*.ico
+
+# C / C++
+*.out
+*.a
+*.so
+*.dll
+*.dylib
+
+~$*
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+.obsidian/

@@ -1,0 +1,22 @@
+object Form1: TForm1
+  Left = 716
+  Height = 600
+  Top = 259
+  Width = 800
+  Caption = 'Form1'
+  ClientHeight = 600
+  ClientWidth = 800
+  KeyPreview = True
+  LCLVersion = '4.2.0.0'
+  OnCreate = FormCreate
+  object PaintBox1: TPaintBox
+    Left = 0
+    Height = 600
+    Top = 0
+    Width = 800
+    Align = alCustom
+    OnMouseDown = PaintBox1MouseDown
+    OnMouseMove = PaintBox1MouseMove
+    OnPaint = PaintBox1Paint
+  end
+end
