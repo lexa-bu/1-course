@@ -1,0 +1,64 @@
+object MainForm: TMainForm
+  Left = 1030
+  Height = 200
+  Top = 364
+  Width = 470
+  Caption = 'Игрушки'
+  ClientHeight = 200
+  ClientWidth = 470
+  Menu = MainMenu1
+  LCLVersion = '4.2.0.0'
+  object StringGrid1: TStringGrid
+    Left = 0
+    Height = 200
+    Top = 0
+    Width = 470
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 0
+    ColWidths = (
+      24
+      199
+      103
+      64
+      64
+    )
+    Cells = (
+      5
+      0
+      0
+      '№'
+      1
+      0
+      'Название игрушки'
+      2
+      0
+      'Стоимость (руб.)'
+      3
+      0
+      'От n-лет'
+      4
+      0
+      'До m-лет'
+    )
+  end
+  object MainMenu1: TMainMenu
+    Left = 8
+    Top = 160
+    object SaveMenuItem: TMenuItem
+      Caption = 'Сохранить...'
+      OnClick = SaveMenuItemClick
+    end
+    object OpenMenuItem: TMenuItem
+      Caption = 'Открыть...'
+      OnClick = OpenMenuItemClick
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 48
+    Top = 160
+  end
+  object SaveDialog1: TSaveDialog
+    Left = 88
+    Top = 160
+  end
+end
