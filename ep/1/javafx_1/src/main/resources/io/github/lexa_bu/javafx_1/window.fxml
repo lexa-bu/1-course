@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane minHeight="280.0" minWidth="450.0" prefHeight="300.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.lexa_bu.javafx_1.Controller">
+   <children>
+      <Label layoutX="111.0" text="Даны x, y, z. Вычислить a, b, если:&#10;a = (2 * cos (x - π / 6)) / (1 / 2 + sin²y)&#10;b = 1 + z² / (3 + z² / 5)" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+         <font>
+            <Font name="Century Gothic" size="17.0" />
+         </font></Label>
+      <Group layoutY="78.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="439.94873046875" AnchorPane.topAnchor="78.0">
+         <children>
+            <Label layoutX="0.05126953125" layoutY="1.0" text="x = &#10;&#10;&#10;y = &#10;&#10;&#10;z = ">
+               <font>
+                  <Font name="Century Gothic" size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="TextFieldX" layoutX="25.05126953125" prefHeight="25.0" prefWidth="85.0">
+               <font>
+                  <Font name="Century Gothic" size="12.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="TextFieldY" layoutX="25.05126953125" layoutY="56.0" prefHeight="25.0" prefWidth="85.0">
+               <font>
+                  <Font name="Century Gothic" size="12.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="TextFieldZ" layoutX="25.05126953125" layoutY="114.0" prefHeight="25.0" prefWidth="85.0">
+               <font>
+                  <Font name="Century Gothic" size="12.0" />
+               </font>
+            </TextField>
+         </children>
+      </Group>
+      <TextArea fx:id="TextAreaSum" layoutX="131.0" layoutY="78.0" maxHeight="140.0" maxWidth="180.0" minHeight="140.0" minWidth="180.0" prefHeight="140.0" prefWidth="180.0" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="131.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="78.0">
+         <font>
+            <Font name="Century Gothic" size="15.0" />
+         </font>
+      </TextArea>
+      <Button fx:id="CalculateClick" layoutX="131.0" layoutY="252.0" mnemonicParsing="false" onAction="#onCalculateClick" prefHeight="23.0" prefWidth="190.0" text="Рассчитать" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="131.0" AnchorPane.rightAnchor="229.0">
+         <font>
+            <Font name="Century Gothic" size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="ClearClick" layoutX="350.0" layoutY="252.0" mnemonicParsing="false" onAction="#onClearClick" prefHeight="23.0" prefWidth="190.0" text="Очистить" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="350.0" AnchorPane.rightAnchor="10.0">
+         <font>
+            <Font name="Century Gothic" size="12.0" />
+         </font></Button>
+      <Label fx:id="LabelA" layoutY="232.0" text="a = " AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="5.0">
+         <font>
+            <Font name="Century Gothic" size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="LabelB" layoutY="267.0" text="b = " AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="5.0">
+         <font>
+            <Font name="Century Gothic" size="15.0" />
+         </font>
+      </Label>
+   </children>
+   <cursor>
+      <Cursor fx:constant="DEFAULT" />
+   </cursor>
+</AnchorPane>

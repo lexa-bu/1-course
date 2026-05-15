@@ -1,28 +1,60 @@
-# Lazarus / Pascal
-*.exe
-*.ppu
-*.o
-*.lps
-*.compiled
-*.obj
-/lib/
-/backup/
-*.lrs
-*.ico
-
-# C / C++
-*.out
-*.a
-*.so
-*.dll
-*.dylib
-
+# ОС / Временные файлы
+.DS_Store
+Thumbs.db
+desktop.ini
 ~$*
 *.tmp
 *.swp
 *.swo
 *~
-.DS_Store
-Thumbs.db
-desktop.ini
+*.bak
+*.log
+
+# Lazarus / Free Pascal
+*.identcache
+*.local
+*.stat
+*.ppu
+*.o
+*.lps
+*.compiled
+backup/
+**/lib/x86_64-win64/
+*.obj
+*.lrs
+
+# Скомпилированные бинарники (если они не в папке lib с исходниками)
+*.exe
+*.out
+*.a
+*.so
+*.dll
+*.dylib
+*.res
+*.ico
+
+# Java / Maven
+target/
+*.class
+.mvn/
+mvnw
+mvnw.cmd
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Obsidian
 .obsidian/
+*.md.bak
+
+# Временные файлы draw.io
+~$*.drawio
+*.bkp

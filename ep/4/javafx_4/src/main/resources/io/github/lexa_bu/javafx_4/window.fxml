@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.lexa_bu.javafx_4.Controller">
+   <children>
+      <Label text="Даны натуральное n, действительное х. Вычислить:&#10;sin x + sin² x + ... + sinⁿ x&#10;Натуральные числа входят в множество рациональные,&#10;которые в свою очередь входят в множество действительных." textAlignment="CENTER" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+         <font>
+            <Font name="Century Gothic" size="13.0" />
+         </font>
+      </Label>
+      <TextArea fx:id="TextAreaSum" layoutX="8.0" layoutY="75.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="75.0">
+         <font>
+            <Font name="Century Gothic" size="12.0" />
+         </font>
+      </TextArea>
+      <Button fx:id="CalculateClick" layoutX="2.0" layoutY="364.0" mnemonicParsing="false" onAction="#onCalculateClick" prefHeight="25.0" prefWidth="80.0" text="Рассчитать" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="365.0" />
+      <Button fx:id="ClearClick" layoutX="96.0" layoutY="370.0" mnemonicParsing="false" onAction="#onClearClick" prefHeight="25.0" prefWidth="80.0" text="Очистить" />
+      <Label layoutX="179.0" layoutY="373.0" text="n =                        x =">
+         <font>
+            <Font name="Century Gothic" size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="TextFieldN" layoutX="206.0" layoutY="371.0" prefHeight="0.0" prefWidth="100.0">
+         <font>
+            <Font name="Century Gothic" size="13.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="TextFieldX" layoutX="336.0" layoutY="371.0" prefHeight="0.0" prefWidth="100.0">
+         <font>
+            <Font name="Century Gothic" size="13.0" />
+         </font>
+      </TextField>
+   </children>
+</AnchorPane>
