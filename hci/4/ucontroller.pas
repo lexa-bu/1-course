@@ -84,25 +84,24 @@ begin
   exit;
 
   try
-    // cоздание файла по выбранному пути
-    AssignFile(files, fileName);
-    rewrite(files);
-
-    // копируем числа из форм
+    // Сначала собираем данные, чтобы не открывать файл зря, если в них ошибка
     m1 := FView.GetM1;
     m2 := FView.GetM2;
     r := FView.GetR;
-
-    // сила притяжения
     F := TGravitationModel.Calculate(m1, m2, r);
+    // создаем файл
+    AssignFile(files, fileName);
+    Rewrite(files);
+    // запись строки
+    try
+      writeln(files, 'm1=' + FloatToStr(m1));
+      writeln(files, 'm2=' + FloatToStr(m2));
+      writeln(files, 'r=' + FloatToStr(r));
+      writeln(files, 'result=' + Format('6.674e-11 * %.2f * %.2f / (%.2f * %.2f) = F = %.2e Н', [m1, m2, r, r, F]));
+    finally
+      CloseFile(files);
+    end;
 
-    // пишем данные в файл
-    writeln(files, 'm1=' + FloatToStr(m1));
-    writeln(files, 'm2=' + FloatToStr(m2));
-    writeln(files, 'r=' + FloatToStr(r));
-    writeln(files, 'result=' + Format('6.674e-11 * %.2f * %.2f / (%.2f * %.2f) = F = %.2e Н', [m1, m2, r, r, F]));
-
-    closefile(files);
     FView.AddLog('✔ Файл успешно сохранён!');
     FView.SetResult('✔ Файл успешно сохранён!', false);
   except

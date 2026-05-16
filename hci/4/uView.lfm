@@ -1,7 +1,7 @@
 object task: Ttask
-  Left = 918
+  Left = 901
   Height = 387
-  Top = 329
+  Top = 383
   Width = 550
   Caption = 'Сила притяжения'
   ClientHeight = 387

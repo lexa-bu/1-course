@@ -24,9 +24,8 @@ end;
 
 var
   m1, m2, r, F: double;
-  i: integer;
+  i, argCount: integer;
   hasHelp: boolean;
-  argCount: integer;
 
 begin
 //  SetConsoleOutputCP(65001);
@@ -37,7 +36,8 @@ begin
   // -h или -help
   for i := 1 to argCount do
   begin
-    if (ParamStr(i) = '-h') or (ParamStr(i) = '-help') then
+    if (ParamStr(i) = '-h') or (ParamStr(i) = '-help')
+    or (ParamStr(i) = 'h') or (ParamStr(i) = 'help') then
     begin
       hasHelp := True;
       break;

@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 1030
+  Left = 1116
   Height = 200
-  Top = 364
+  Top = 612
   Width = 470
   Caption = 'Игрушки'
   ClientHeight = 200
@@ -32,7 +32,7 @@ object MainForm: TMainForm
       'Название игрушки'
       2
       0
-      'Стоимость (руб.)'
+      'Стоимость (коп.)'
       3
       0
       'От n-лет'

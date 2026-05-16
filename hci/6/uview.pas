@@ -6,7 +6,7 @@ uses
   ActnList, Menus, uController;
 
 type
-
+{view}
   { Ttask }
 
   Ttask = class(TForm, IGravitationView)
@@ -51,7 +51,6 @@ type
     FController: TGravitationController;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     function GetM1: Double;
     function GetM2: Double;
     function GetR: Double;
@@ -74,40 +73,34 @@ implementation
 
 { Ttask }
 
-//экземпляр контроллера
+// экземпляр контроллера
 constructor Ttask.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FController := TGravitationController.Create(Self);
 end;
 
-//освобождает память контроллера
-destructor Ttask.Destroy;
-begin
-  FController.Free;
-  inherited Destroy;
-end;
 
-//m1 из поля ввода
-function Ttask.GetM1: Double;
+// m1 из поля ввода
+function Ttask.GetM1: double;
 begin
   Result := StrToFloat(Edit_m1.Text);
 end;
 
-//m2 из поля ввода
-function Ttask.GetM2: Double;
+// m2 из поля ввода
+function Ttask.GetM2: double;
 begin
   Result := StrToFloat(Edit_m2.Text);
 end;
 
-//r из поля ввода
-function Ttask.GetR: Double;
+// r из поля ввода
+function Ttask.GetR: double;
 begin
   Result := StrToFloat(Edit_r.Text);
 end;
 
-//отображает результат/ошибку в метке Label_res
-procedure Ttask.SetResult(const Value: string; IsError: Boolean);
+// красит результат/ошибку в метке Label_res
+procedure Ttask.SetResult(const Value: string; IsError: boolean);
 begin
   Label_res.Caption := Value;
   if IsError then
@@ -116,13 +109,13 @@ begin
     Label_res.Font.Color := clGreen;
 end;
 
-//пишет сообщение в Memo1
+// пишет сообщение в Memo1
 procedure Ttask.AddLog(const Msg: string);
 begin
   Memo1.Lines.Add(Msg);
 end;
 
-//очистка
+// очистка
 procedure Ttask.ClearInput;
 begin
   Edit_m1.Clear;
@@ -132,25 +125,25 @@ begin
   Memo1.Lines.Clear;
 end;
 
-//текст в поле ввода m1
+// текст в поле ввода m1
 procedure Ttask.SetM1(const Value: string);
 begin
   Edit_m1.Text := Value;
 end;
 
-//текст в поле ввода m2
+// текст в поле ввода m2
 procedure Ttask.SetM2(const Value: string);
 begin
   Edit_m2.Text := Value;
 end;
 
-//текст в поле ввода r
+// текст в поле ввода r
 procedure Ttask.SetR(const Value: string);
 begin
   Edit_r.Text := Value;
 end;
 
-//сохранения файла
+// сохранения файла
 function Ttask.AskSaveFile: string;
 begin
   if SaveDialog1.Execute then
@@ -159,7 +152,7 @@ begin
     Result := '';
 end;
 
-//открытия файла
+// открытия файла
 function Ttask.AskOpenFile: string;
 begin
   if OpenDialog1.Execute then
@@ -168,37 +161,37 @@ begin
     Result := '';
 end;
 
-//кнопка расчета
+// кнопка расчета
 procedure Ttask.Button_ResultClick(Sender: TObject);
 begin
   FController.CalculateAndShow;
 end;
 
-//Сохранить...
+// Сохранить...
 procedure Ttask.MenuItemSaveClick(Sender: TObject);
 begin
   FController.SaveToFile;
 end;
 
-//Открыть...
+// Открыть...
 procedure Ttask.MenuItemOpenClick(Sender: TObject);
 begin
   FController.LoadFromFile;
 end;
 
-//Очистить
+// Очистить
 procedure Ttask.Button1Click(Sender: TObject);
 begin
   FController.ClearAll;
 end;
 
-//Выход из приложения
+// Выход из приложения
 procedure Ttask.ActionExitExecute(Sender: TObject);
 begin
   Close;
 end;
 
-//Об авторе...
+// Об авторе...
 procedure Ttask.MenuItemRef_autorClick(Sender: TObject);
 begin
   ShowMessage(
@@ -208,12 +201,11 @@ begin
   );
 end;
 
-//О программе...
+// О программе...
 procedure Ttask.MenuItemRef_infoClick(Sender: TObject);
 begin
   ShowMessage(
   'Определить силу притяжения F между телами массы m 1 и m2, входящимся на расстоянии r друг от друга.'
   );
 end;
-
 end.

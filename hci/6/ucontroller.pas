@@ -8,11 +8,12 @@ uses
   SysUtils, uModel;
 
 type
+{controller}
   IGravitationView = interface
-    function GetM1: Double;
-    function GetM2: Double;
-    function GetR: Double;
-    procedure SetResult(const Value: string; IsError: Boolean);
+    function GetM1: double;
+    function GetM2: double;
+    function GetR: double;
+    procedure SetResult(const Value: string; IsError: boolean);
     procedure AddLog(const Msg: string);
     procedure ClearInput;
     procedure SetM1(const Value: string);
@@ -24,8 +25,8 @@ type
 
   TGravitationController = class
   private
-    FView: IGravitationView;
   public
+    FView: IGravitationView;
     constructor Create(AView: IGravitationView);
     procedure CalculateAndShow;
     procedure SaveToFile;
@@ -35,20 +36,20 @@ type
 
 implementation
 
-//сохраняет ссылку на интерфейс View
+// сохраняет ссылку на интерфейс View
 constructor TGravitationController.Create(AView: IGravitationView);
 begin
   inherited Create;
   FView := AView;
 end;
 
-//читает данные и выводит результат
+// читает данные и выводит результат
 procedure TGravitationController.CalculateAndShow;
 var
-  m1, m2, r, F: Double;
+  m1, m2, r, F: double;
 begin
   try
-    //cбор данных
+    // cбор данных
     m1 := FView.GetM1;
     m2 := FView.GetM2;
     r := FView.GetR;
@@ -56,22 +57,22 @@ begin
     if r <= 0 then
     begin
       FView.AddLog('❌ Ошибка: r должен быть > 0!');
-      FView.SetResult('❌ Ошибка: r должен быть > 0!', True);
+      FView.SetResult('❌ Ошибка: r должен быть > 0!', true);
       Exit;
     end;
 
     F := TGravitationModel.Calculate(m1, m2, r);
 
-    FView.SetResult(Format('✔  F = %.2e Н', [F]), False);
+    FView.SetResult(Format('✔  F = %.2e Н', [F]), false);
     FView.AddLog(Format('✔  6.674e-11 * %.2f * %.2f / (%.2f * %.2f) = F = %.2e Н', [m1, m2, r, r, F]));
 
   except
     FView.AddLog('❌ Ошибка: введите корректные числа!');
-    FView.SetResult('❌ Ошибка: введите корректные числа!', True);
+    FView.SetResult('❌ Ошибка: введите корректные числа!', true);
   end;
 end;
 
-//сохранение результатов расчета в текстовый файл *.txt
+// сохранение результатов расчета в текстовый файл *.txt
 procedure TGravitationController.SaveToFile;
 var
   files: TextFile;
@@ -79,42 +80,42 @@ var
   fileName: string;
 begin
   fileName := FView.AskSaveFile;
-  if fileName = '' then Exit;
+  if fileName = '' then
+  exit;
 
   try
-    //cоздание файла по выбранному пути
-    AssignFile(files, fileName);
-    rewrite(files);
-
-    //копируем числа из форм
+    // Сначала собираем данные, чтобы не открывать файл зря, если в них ошибка
     m1 := FView.GetM1;
     m2 := FView.GetM2;
     r := FView.GetR;
-
-    //сила притяжения
     F := TGravitationModel.Calculate(m1, m2, r);
+    // создаем файл
+    AssignFile(files, fileName);
+    Rewrite(files);
+    // запись строки
+    try
+      writeln(files, 'm1=' + FloatToStr(m1));
+      writeln(files, 'm2=' + FloatToStr(m2));
+      writeln(files, 'r=' + FloatToStr(r));
+      writeln(files, 'result=' + Format('6.674e-11 * %.2f * %.2f / (%.2f * %.2f) = F = %.2e Н', [m1, m2, r, r, F]));
+    finally
+      CloseFile(files);
+    end;
 
-    //пишем данные в файл
-    writeln(files, 'm1=' + FloatToStr(m1));
-    writeln(files, 'm2=' + FloatToStr(m2));
-    writeln(files, 'r=' + FloatToStr(r));
-    writeln(files, 'result=' + Format('6.674e-11 * %.2f * %.2f / (%.2f * %.2f) = F = %.2e Н', [m1, m2, r, r, F]));
-
-    closefile(files);
     FView.AddLog('✔ Файл успешно сохранён!');
-    FView.SetResult('✔ Файл успешно сохранён!', False);
+    FView.SetResult('✔ Файл успешно сохранён!', false);
   except
     FView.AddLog('❌ Ошибка при сохранении файла!');
-    FView.SetResult('❌ Ошибка при сохранении файла!', True);
+    FView.SetResult('❌ Ошибка при сохранении файла!', true);
   end;
 end;
 
-//загрузка данных из файла и пересчет
+// загрузка данных из файла и пересчет
 procedure TGravitationController.LoadFromFile;
 var
   fileso: TextFile;
   s, key, val: string;
-  i: Integer;
+  i: integer;
   fileName: string;
   m1, m2, r: string;
 begin
@@ -122,18 +123,18 @@ begin
   if fileName = '' then Exit;
 
   try
-    //открываем файл
+    // открываем файл
     AssignFile(fileso, fileName);
     Reset(fileso);
 
-    //чистим поле
+    // чистим поле
     FView.ClearInput;
     m1 := ''; m2 := ''; r := '';
 
-    //читаем файл
+    // читаем файл
     while not Eof(fileso) do
     begin
-      ReadLn(fileso, s);
+      readln(fileso, s);
       i := Pos('=', s);
       if i > 0 then
       begin
@@ -162,7 +163,7 @@ begin
   end;
 end;
 
-//полная очистка
+// полная очистка
 procedure TGravitationController.ClearAll;
 begin
   FView.ClearInput;
