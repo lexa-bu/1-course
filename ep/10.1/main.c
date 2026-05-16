@@ -41,23 +41,24 @@ int main(void)
     }
 
     // читаем числа из файла f пока не конец файла
-     while (fscanf(f, "%d", &number) != EOF)
-     {
-        if (fscanf(f, "%d", &number) == 1)
+    while (!feof(f)) 
+    {
+        if (fscanf(f, "%d", &number) == 1) 
         {
-            if (number % 2 == 0)
+            // проверка на четность
+            if (number % 2 == 0) 
             {
-                // записываем чётное число в файл g
-                fprintf(g, "%d\n", number);
+                fprintf(g, "%d\n", number); // запись в файл g
             }
         } 
-        else
+        else 
         {
-            // пропускаем символ, который не является цифрой
-            if (!feof(f)) fgetc(f);
-        }   
+            if (!feof(f)) 
+            {
+                fgetc(f); 
+            }
+        }
     }
-
     // закрываем файлы и освобождаем ресурсы
     fclose(f);
     fclose(g);
