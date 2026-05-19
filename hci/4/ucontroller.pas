@@ -61,7 +61,7 @@ begin
       Exit;
     end;
 
-    F := TGravitationModel.Calculate(m1, m2, r);
+    F := Calculate(m1, m2, r);
 
     FView.SetResult(Format('✔  F = %.2e Н', [F]), false);
     FView.AddLog(Format('✔  6.674e-11 * %.2f * %.2f / (%.2f * %.2f) = F = %.2e Н', [m1, m2, r, r, F]));
@@ -88,7 +88,7 @@ begin
     m1 := FView.GetM1;
     m2 := FView.GetM2;
     r := FView.GetR;
-    F := TGravitationModel.Calculate(m1, m2, r);
+    F := Calculate(m1, m2, r);
     // создаем файл
     AssignFile(files, fileName);
     Rewrite(files);
@@ -102,8 +102,8 @@ begin
       CloseFile(files);
     end;
 
-    FView.AddLog('✔ Файл успешно сохранён!');
-    FView.SetResult('✔ Файл успешно сохранён!', false);
+    FView.AddLog('✔  Файл успешно сохранён!');
+    FView.SetResult('✔  Файл успешно сохранён!', false);
   except
     FView.AddLog('❌ Ошибка при сохранении файла!');
     FView.SetResult('❌ Ошибка при сохранении файла!', true);
@@ -154,7 +154,7 @@ begin
       FView.SetM1(m1);
       FView.SetM2(m2);
       FView.SetR(r);
-      FView.AddLog('✔ Данные успешно загружены!');
+      FView.AddLog('✔  Данные успешно загружены!');
       CalculateAndShow;
     end;
   except
