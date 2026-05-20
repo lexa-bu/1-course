@@ -1,67 +1,61 @@
 unit uView;
+
 {$mode objfpc}{$H+}
+
 interface
+
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  ActnList, Menus, uController;
+  ActnList, Menus;
 
 type
-{view}
-  { Ttask }
-
-  Ttask = class(TForm, IGravitationView)
-    ActionInfo: TAction;
-    ActionOpen: TAction;
-    ActionSave: TAction;
-    ActionDel: TAction;
-    ActionExitEsc: TAction;
-    ActionResult: TAction;
-    ActionExit: TAction;
-    ActionList1: TActionList;
-    Button1: TButton;
-    Button_Result: TButton;
-    Edit_m1: TEdit;
-    Edit_m2: TEdit;
-    Edit_r: TEdit;
-    Image1: TImage;
-    Label1: TLabel;
-    Label_res: TLabel;
-    Label_task: TLabel;
-    Label_m1: TLabel;
-    Label_m2: TLabel;
-    Label_r: TLabel;
-    Label_task1: TLabel;
-    MainMenu1: TMainMenu;
-    Memo1: TMemo;
-    MenuItemRef_autor: TMenuItem;
-    MenuItemRef_info: TMenuItem;
-    MenuItemRef: TMenuItem;
-    MenuItemSave: TMenuItem;
-    MenuItemOpen: TMenuItem;
-    OpenDialog1: TOpenDialog;
-    SaveDialog1: TSaveDialog;
+  Ttask = class(TForm)
+    ActionList1: TActionList;                         // горячие клавиши
+    ActionInfo: TAction;                              // о программе F1
+    ActionOpen: TAction;                              // открыть     Ctrl+O
+    ActionSave: TAction;                              // сохранить   Ctrl+S
+    ActionDel: TAction;                               // очистка     Del
+    ActionResult: TAction;                            // рассчитать  F2
+    ActionExitEsc: TAction;                           // выход       Esc
+    ActionExit: TAction;                              // выход       Ctrl+Q
+    ButtonClear: TButton;                             // кнопка "Очистить"
+    ButtonResult: TButton;                            // кнопка "Рассчитать"
+    Edit_m1: TEdit;                                   // ввод данных в m1
+    Edit_m2: TEdit;                                   // ввод данных в m2
+    Edit_r: TEdit;                                    // ввод данных в r
+    Image: TImage;                                    // фото
+    LabelHotkeys: TLabel;                             // текст с горяч. клавиш
+    Label_res: TLabel;                                // текст с результатом
+    Label_task: TLabel;                               // текст с задачей
+    Label_m1: TLabel;                                 // m1 (масса 1 тела в кг)
+    Label_m2: TLabel;                                 // m2 (масса 2 тела в кг)
+    Label_r: TLabel;                                  // r  (расстояние между ними в м)
+    Label_formuls: TLabel;                            // текст с формулами
+    MemoHistory: TMemo;                               // история
+    MainMenu1: TMainMenu;                             // меню
+    MenuItemSave: TMenuItem;                          // Сохранить...
+    OpenDialog1: TOpenDialog;                         // сохранение файла *.txt
+    MenuItemOpen: TMenuItem;                          // Открыть...
+    SaveDialog1: TSaveDialog;                         // открытие файла *.txt
+    MenuItemRef: TMenuItem;                           // Справка
+    MenuItemRef_info: TMenuItem;                      // Справка > О программе...
+    MenuItemRef_autor: TMenuItem;                     // Справка > Об авторе...
+    // выход из программы
     procedure ActionExitExecute(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure Button_ResultClick(Sender: TObject);
+    // кнопка "Очистить"
+    procedure ButtonClearClick(Sender: TObject);
+    // кнопка "Рассчитать"
+    procedure ButtonResultClick(Sender: TObject);
+    // меню Открыть...
     procedure MenuItemOpenClick(Sender: TObject);
-    procedure MenuItemRef_autorClick(Sender: TObject);
-    procedure MenuItemRef_infoClick(Sender: TObject);
+    // меню Сохранить...
     procedure MenuItemSaveClick(Sender: TObject);
+    // меню Справка > Об авторе...
+    procedure MenuItemRef_autorClick(Sender: TObject);
+    // меню Справка > О программе...
+    procedure MenuItemRef_infoClick(Sender: TObject);
   private
-    FController: TGravitationController;
   public
-    constructor Create(AOwner: TComponent); override;
-    function GetM1: Double;
-    function GetM2: Double;
-    function GetR: Double;
-    procedure SetResult(const Value: string; IsError: Boolean);
-    procedure AddLog(const Msg: string);
-    procedure ClearInput;
-    procedure SetM1(const Value: string);
-    procedure SetM2(const Value: string);
-    procedure SetR(const Value: string);
-    function AskSaveFile: string;
-    function AskOpenFile: string;
   end;
 
 var
@@ -69,143 +63,50 @@ var
 
 implementation
 
+uses uController;
+
 {$R *.lfm}
-
-{ Ttask }
-
-// экземпляр контроллера
-constructor Ttask.Create(AOwner: TComponent);
+// кнопка "Рассчитать"
+procedure Ttask.ButtonResultClick(Sender: TObject);
 begin
-  inherited Create(AOwner);
-  FController := TGravitationController.Create(Self);
+  uController.CalculateAndShow;
 end;
 
-
-// m1 из поля ввода
-function Ttask.GetM1: double;
-begin
-  Result := StrToFloat(Edit_m1.Text);
-end;
-
-// m2 из поля ввода
-function Ttask.GetM2: double;
-begin
-  Result := StrToFloat(Edit_m2.Text);
-end;
-
-// r из поля ввода
-function Ttask.GetR: double;
-begin
-  Result := StrToFloat(Edit_r.Text);
-end;
-
-// красит результат/ошибку в метке Label_res
-procedure Ttask.SetResult(const Value: string; IsError: boolean);
-begin
-  Label_res.Caption := Value;
-  if IsError then
-    Label_res.Font.Color := clRed
-  else
-    Label_res.Font.Color := clGreen;
-end;
-
-// пишет сообщение в Memo1
-procedure Ttask.AddLog(const Msg: string);
-begin
-  Memo1.Lines.Add(Msg);
-end;
-
-// очистка
-procedure Ttask.ClearInput;
-begin
-  Edit_m1.Clear;
-  Edit_m2.Clear;
-  Edit_r.Clear;
-  Label_res.Caption := '';
-  Memo1.Lines.Clear;
-end;
-
-// текст в поле ввода m1
-procedure Ttask.SetM1(const Value: string);
-begin
-  Edit_m1.Text := Value;
-end;
-
-// текст в поле ввода m2
-procedure Ttask.SetM2(const Value: string);
-begin
-  Edit_m2.Text := Value;
-end;
-
-// текст в поле ввода r
-procedure Ttask.SetR(const Value: string);
-begin
-  Edit_r.Text := Value;
-end;
-
-// сохранения файла
-function Ttask.AskSaveFile: string;
-begin
-  if SaveDialog1.Execute then
-    Result := SaveDialog1.FileName
-  else
-    Result := '';
-end;
-
-// открытия файла
-function Ttask.AskOpenFile: string;
-begin
-  if OpenDialog1.Execute then
-    Result := OpenDialog1.FileName
-  else
-    Result := '';
-end;
-
-// кнопка расчета
-procedure Ttask.Button_ResultClick(Sender: TObject);
-begin
-  FController.CalculateAndShow;
-end;
-
-// Сохранить...
+// меню Сохранить...
 procedure Ttask.MenuItemSaveClick(Sender: TObject);
 begin
-  FController.SaveToFile;
+  uController.SaveToFile;
 end;
 
-// Открыть...
+// меню Открыть...
 procedure Ttask.MenuItemOpenClick(Sender: TObject);
 begin
-  FController.LoadFromFile;
+  uController.LoadFromFile;
 end;
 
-// Очистить
-procedure Ttask.Button1Click(Sender: TObject);
+// кнопка "Очистить"
+procedure Ttask.ButtonClearClick(Sender: TObject);
 begin
-  FController.ClearAll;
+  uController.ClearAll;
 end;
 
-// Выход из приложения
+// выход из программы
 procedure Ttask.ActionExitExecute(Sender: TObject);
 begin
   Close;
 end;
 
-// Об авторе...
+// меню Справка > Об авторе...
 procedure Ttask.MenuItemRef_autorClick(Sender: TObject);
 begin
-  ShowMessage(
-  'Автор: Булдыгеров Алексей.' + #13#10 +
+  MessageDlg('Об авторе', 'Автор: Булдыгеров Алексей.' + #13#10 +
   'Студент 2-го курса по специальности "Информатика и вычислительная техника".' + #13#10 +
-  'Telegram: @lexa_bu'
-  );
+  'Telegram: @sixteenfive', mtInformation, [mbOk], 0);
 end;
-
-// О программе...
+// меню Справка > О программе...
 procedure Ttask.MenuItemRef_infoClick(Sender: TObject);
 begin
-  ShowMessage(
-  'Определить силу притяжения F между телами массы m 1 и m2, входящимся на расстоянии r друг от друга.'
-  );
+  MessageDlg('О программе', 'Задача:' + #13#10 + 'Определить силу притяжения F между телами массы m1 и m2, находящимися на расстоянии r друг от друга.', mtInformation, [mbOk], 0);
 end;
+
 end.

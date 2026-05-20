@@ -2,98 +2,57 @@ program console_grav;
 {$mode objfpc}{$H+}
 {$codepage UTF8}
 uses
-  SysUtils, Windows, uModel;
+  SysUtils, uModel;
 
 //вывод
-procedure PrintHelp;
+procedure Help;
 begin
-  writeln('--------------------------------------------------------');
-  writeln('');
-  writeln('Использование: .\console_grav.exe <m1> <m2> <r>');
-  writeln('');
-  writeln('Параметры:');
-  writeln('  m1    Масса первого тела (кг)');
-  writeln('  m2    Масса второго тела (кг)');
-  writeln('  r     Расстояние между центрами масс (м), r > 0');
-  writeln('');
-  writeln('Пример:');
-  writeln('  .\console_grav.exe 67 42 1398');
-  writeln('');
-  writeln('--------------------------------------------------------');
+  writeln('' + #13#10 +
+          'Использование:' + #13#10 +
+          '.\console_grav.exe <m1> <m2> <r>' + #13#10 +
+          '' + #13#10 +
+          'Параметры:' + #13#10 +
+          'm1 Масса первого тела в кг.' + #13#10 +
+          'm2 Масса второго тела в кг.' + #13#10 +
+          'r  Расстояние между центрами масс в м. r > 0' + #13#10 +
+          '' + #13#10 +
+          'Пример:' + #13#10 +
+          '.\console_grav.exe 67 42 1398' + #13#10 +
+          '');
 end;
 
 var
-  m1, m2, r, F: double;
-  i, argCount: integer;
-  hasHelp: boolean;
-
+  m1, m2, r, F: Double;
+  firstArg: string;
 begin
-//  SetConsoleOutputCP(65001);
-  // кол-во аргументов cmd
-  argCount := ParamCount;
-  hasHelp := false;
+  firstArg := LowerCase(ParamStr(1));
 
-  // -h или -help
-  for i := 1 to argCount do
+  // помощь
+  if (ParamCount <> 3) or (firstArg = '-h') or (firstArg = '-help') or
+                          (firstArg =  '')  or (firstArg = 'help') then
   begin
-    if (ParamStr(i) = '-h') or (ParamStr(i) = '-help')
-    or (ParamStr(i) = 'h') or (ParamStr(i) = 'help') then
-    begin
-      hasHelp := True;
-      break;
-    end;
-  end;
-  if hasHelp or (argCount = 0) then
-  begin
-    PrintHelp;
+    Help;
     halt(0);
   end;
 
   // проверка аргументов
-  if argCount <> 3 then
+  if not TryStrToFloat(ParamStr(1), m1) or
+     not TryStrToFloat(ParamStr(2), m2) or
+     not TryStrToFloat(ParamStr(3), r) then
+    begin
+      writeln('Ошибка! Пожалуйста, введите корректные числа.');
+      halt(1);
+    end;
+
+  if r <= 0 then
   begin
-    writeln('--------------------------------------------------------');
-    writeln('Ошибка! Неверное количество параметров.');
-    writeln('--------------------------------------------------------');
+    writeln('Ошибка! Расстояние r должно быть строго больше нуля.');
     halt(1);
   end;
 
-  try
-    // парсинг
-    m1 := StrToFloat(ParamStr(1));
-    m2 := StrToFloat(ParamStr(2));
-    r  := StrToFloat(ParamStr(3));
-    // если 0 больше или меньше
-    if r <= 0 then
-    begin
-      writeln('--------------------------------------------------------');
-      writeln('Ошибка! r должен быть > 0!');
-      writeln('--------------------------------------------------------');
-      halt(1);
-    end;
-
-{model}
-    F := TGravitationModel.Calculate(m1, m2, r);
+    F := Calculate(m1, m2, r);
 
     // вывод
-  writeln('--------------------------------------------------------');
     writeln(Format('Ответ: F = %.2e Н', [F]));
     writeln(Format('Развернуто: 6.674e-11 * %.2f * %.2f / (%.2f * %.2f) = F = %.2e Н', [m1, m2, r, r, F]));
-  writeln('--------------------------------------------------------');
-  except
-    on E: EConvertError do
-    begin
-      writeln('--------------------------------------------------------');
-      writeln('Ошибка! введите корректные числа!');
-      writeln('--------------------------------------------------------');
-      halt(1);
-    end;
-    on E: Exception do
-    begin
-      writeln('--------------------------------------------------------');
-      writeln('Неизвестная ошибка! ', E.Message);
-      writeln('--------------------------------------------------------');
-      halt(1);
-    end;
-  end;
-end.
+  end.

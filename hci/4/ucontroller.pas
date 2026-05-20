@@ -3,170 +3,110 @@ unit uController;
 {$mode objfpc}{$H+}
 
 interface
-
-uses
-  SysUtils, uModel;
-
-type
-{controller}
-  IGravitationView = interface
-    function GetM1: double;
-    function GetM2: double;
-    function GetR: double;
-    procedure SetResult(const Value: string; IsError: boolean);
-    procedure AddLog(const Msg: string);
-    procedure ClearInput;
-    procedure SetM1(const Value: string);
-    procedure SetM2(const Value: string);
-    procedure SetR(const Value: string);
-    function AskSaveFile: string;
-    function AskOpenFile: string;
-  end;
-
-  TGravitationController = class
-  private
-  public
-    FView: IGravitationView;
-    constructor Create(AView: IGravitationView);
-    procedure CalculateAndShow;
-    procedure SaveToFile;
-    procedure LoadFromFile;
-    procedure ClearAll;
-  end;
+// считает и выводит результат
+procedure CalculateAndShow;
+// сохранить данные в файл
+procedure SaveToFile;
+// загрузить данные из файла
+procedure LoadFromFile;
+// очистить
+procedure ClearAll;
 
 implementation
 
-// сохраняет ссылку на интерфейс View
-constructor TGravitationController.Create(AView: IGravitationView);
-begin
-  inherited Create;
-  FView := AView;
-end;
+uses SysUtils, Graphics, uView, uModel;
 
-// читает данные и выводит результат
-procedure TGravitationController.CalculateAndShow;
+// считает и выводит результат
+procedure CalculateAndShow;
 var
   m1, m2, r, F: double;
 begin
   try
-    // cбор данных
-    m1 := FView.GetM1;
-    m2 := FView.GetM2;
-    r := FView.GetR;
+    m1 := StrToFloat(task.Edit_m1.Text);
+    m2 := StrToFloat(task.Edit_m2.Text);
+    r :=  StrToFloat(task.Edit_r.Text);
 
     if r <= 0 then
     begin
-      FView.AddLog('❌ Ошибка: r должен быть > 0!');
-      FView.SetResult('❌ Ошибка: r должен быть > 0!', true);
-      Exit;
+      task.MemoHistory.Lines.Add('❌ Ошибка: r должен быть > 0!');
+      task.Label_res.Caption := '❌ Ошибка: r должен быть > 0!';
+      task.Label_res.Font.Color := clRed;
+      exit;
     end;
 
     F := Calculate(m1, m2, r);
 
-    FView.SetResult(Format('✔  F = %.2e Н', [F]), false);
-    FView.AddLog(Format('✔  6.674e-11 * %.2f * %.2f / (%.2f * %.2f) = F = %.2e Н', [m1, m2, r, r, F]));
-
+    task.Label_res.Caption := Format('✔  F = %.2e Н', [F]);
+    task.Label_res.Font.Color := clGreen;
+    task.MemoHistory.Lines.Add(Format('✔  Расчет: m1=%.2f, m2=%.2f, r=%.2f, Ответ=%.2e Н', [m1, m2, r, F]));
   except
-    FView.AddLog('❌ Ошибка: введите корректные числа!');
-    FView.SetResult('❌ Ошибка: введите корректные числа!', true);
+    task.MemoHistory.Lines.Add('❌ Ошибка: введите корректные числа!');
+    task.Label_res.Caption := '❌ Ошибка: введите корректные числа!';
+    task.Label_res.Font.Color := clRed;
   end;
 end;
 
-// сохранение результатов расчета в текстовый файл *.txt
-procedure TGravitationController.SaveToFile;
+// сохранить данные в файл
+procedure SaveToFile;
 var
-  files: TextFile;
-  m1, m2, r, F: double;
+  f: TextFile;
   fileName: string;
 begin
-  fileName := FView.AskSaveFile;
-  if fileName = '' then
-  exit;
+  if task.SaveDialog1.Execute then
+  begin
+    fileName := task.SaveDialog1.FileName;
+    AssignFile(f, fileName);
+    Rewrite(f);
 
-  try
-    // Сначала собираем данные, чтобы не открывать файл зря, если в них ошибка
-    m1 := FView.GetM1;
-    m2 := FView.GetM2;
-    r := FView.GetR;
-    F := Calculate(m1, m2, r);
-    // создаем файл
-    AssignFile(files, fileName);
-    Rewrite(files);
-    // запись строки
-    try
-      writeln(files, 'm1=' + FloatToStr(m1));
-      writeln(files, 'm2=' + FloatToStr(m2));
-      writeln(files, 'r=' + FloatToStr(r));
-      writeln(files, 'result=' + Format('6.674e-11 * %.2f * %.2f / (%.2f * %.2f) = F = %.2e Н', [m1, m2, r, r, F]));
-    finally
-      CloseFile(files);
-    end;
+    writeln(f, task.Edit_m1.Text);
+    writeln(f, task.Edit_m2.Text);
+    writeln(f, task.Edit_r.Text);
 
-    FView.AddLog('✔  Файл успешно сохранён!');
-    FView.SetResult('✔  Файл успешно сохранён!', false);
-  except
-    FView.AddLog('❌ Ошибка при сохранении файла!');
-    FView.SetResult('❌ Ошибка при сохранении файла!', true);
+    CloseFile(f);
+
+    task.MemoHistory.Lines.Add('✔  Файл успешно сохранён!');
+    task.Label_res.Caption := '✔  Файл успешно сохранён!';
+    task.Label_res.Font.Color := clGreen;
   end;
 end;
 
-// загрузка данных из файла и пересчет
-procedure TGravitationController.LoadFromFile;
+// загрузить данные из файла
+procedure LoadFromFile;
 var
-  fileso: TextFile;
-  s, key, val: string;
-  i: integer;
+  f: TextFile;
   fileName: string;
-  m1, m2, r: string;
+  s_m1, s_m2, s_r: string;
 begin
-  fileName := FView.AskOpenFile;
-  if fileName = '' then Exit;
+  if task.OpenDialog1.Execute then
+  begin
+    fileName := task.OpenDialog1.FileName;
+    AssignFile(f, fileName);
+    Reset(f);
 
-  try
-    // открываем файл
-    AssignFile(fileso, fileName);
-    Reset(fileso);
+    readln(f, s_m1);
+    readln(f, s_m2);
+    readln(f, s_r);
 
-    // чистим поле
-    FView.ClearInput;
-    m1 := ''; m2 := ''; r := '';
+    CloseFile(f);
 
-    // читаем файл
-    while not Eof(fileso) do
-    begin
-      readln(fileso, s);
-      i := Pos('=', s);
-      if i > 0 then
-      begin
-        key := Copy(s, 1, i - 1);
-        val := Copy(s, i + 1, MaxInt);
+    task.Edit_m1.Text := s_m1;
+    task.Edit_m2.Text := s_m2;
+    task.Edit_r.Text := s_r;
 
-        if key = 'm1' then m1 := val
-        else if key = 'm2' then m2 := val
-        else if key = 'r' then r := val;
-      end;
-    end;
+    task.MemoHistory.Lines.Add('✔  Данные успешно загружены!');
 
-    CloseFile(fileso);
-
-    if (m1 <> '') and (m2 <> '') and (r <> '') then
-    begin
-      FView.SetM1(m1);
-      FView.SetM2(m2);
-      FView.SetR(r);
-      FView.AddLog('✔  Данные успешно загружены!');
-      CalculateAndShow;
-    end;
-  except
-    FView.AddLog('❌ Ошибка открытия файла!');
-    FView.SetResult('❌ Ошибка открытия файла!', True);
+    CalculateAndShow;
   end;
 end;
 
-// полная очистка
-procedure TGravitationController.ClearAll;
+// очистить
+procedure ClearAll;
 begin
-  FView.ClearInput;
+  task.Edit_m1.Clear;
+  task.Edit_m2.Clear;
+  task.Edit_r.Clear;
+  task.Label_res.Caption := '';
+  task.MemoHistory.Lines.Clear;
 end;
 
 end.

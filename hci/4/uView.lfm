@@ -41,7 +41,7 @@ object task: Ttask
     ShowHint = True
     TabOrder = 2
   end
-  object Button_Result: TButton
+  object ButtonResult: TButton
     Left = 12
     Height = 34
     Hint = 'Кнопка "Рассчитать" расчитывает '#13#10'введенные данные по формуле справа.'
@@ -51,7 +51,7 @@ object task: Ttask
     ParentShowHint = False
     ShowHint = True
     TabOrder = 3
-    OnClick = Button_ResultClick
+    OnClick = ButtonResultClick
   end
   object Label_m1: TLabel
     Left = 14
@@ -89,8 +89,8 @@ object task: Ttask
     ParentFont = False
     WordWrap = True
   end
-  object Memo1: TMemo
-    AnchorSideBottom.Control = Button1
+  object MemoHistory: TMemo
+    AnchorSideBottom.Control = ButtonClear
     Left = 14
     Height = 145
     Hint = '"История" выводит результаты вычислений.'
@@ -103,7 +103,7 @@ object task: Ttask
     TabOrder = 4
     TabStop = False
   end
-  object Label_task1: TLabel
+  object Label_formuls: TLabel
     Left = 156
     Height = 44
     Top = 152
@@ -118,7 +118,7 @@ object task: Ttask
     ParentFont = False
     WordWrap = True
   end
-  object Button1: TButton
+  object ButtonClear: TButton
     Left = 12
     Height = 25
     Hint = 'Кнопка "Очистить" очищает данные,'#13#10'включая введенные значения, результат'#13#10'и историю.'
@@ -131,7 +131,7 @@ object task: Ttask
     ShowHint = True
     TabOrder = 5
     TabStop = False
-    OnClick = Button1Click
+    OnClick = ButtonClearClick
   end
   object Label_res: TLabel
     AnchorSideLeft.Control = Edit_m2
@@ -150,7 +150,7 @@ object task: Ttask
     Font.Quality = fqDraft
     ParentFont = False
   end
-  object Image1: TImage
+  object Image: TImage
     Left = 204
     Height = 144
     Top = 232
@@ -1033,7 +1033,7 @@ object task: Ttask
       FC32192FC3FCF6FF1F21548CC2A911B1CA0000000049454E44AE426082
     }
   end
-  object Label1: TLabel
+  object LabelHotkeys: TLabel
     Left = 384
     Height = 112
     Top = 112
@@ -1045,7 +1045,7 @@ object task: Ttask
     ParentBidiMode = False
   end
   object ActionList1: TActionList
-    OnChange = Button_ResultClick
+    OnChange = ButtonResultClick
     Left = 520
     Top = 359
     object ActionExit: TAction
@@ -1061,12 +1061,12 @@ object task: Ttask
     object ActionResult: TAction
       Caption = 'ActionResult'
       ShortCut = 113
-      OnExecute = Button_ResultClick
+      OnExecute = ButtonResultClick
     end
     object ActionDel: TAction
       Caption = 'ActionDel'
       ShortCut = 46
-      OnExecute = Button1Click
+      OnExecute = ButtonClearClick
     end
     object ActionSave: TAction
       Caption = 'ActionSave'
