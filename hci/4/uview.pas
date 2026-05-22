@@ -34,9 +34,9 @@ type
     MemoHistory: TMemo;                               // история
     MainMenu1: TMainMenu;                             // меню
     MenuItemSave: TMenuItem;                          // Сохранить...
-    OpenDialog1: TOpenDialog;                         // сохранение файла *.txt
+    SaveDialog: TSaveDialog;                         // сохранение файла *.txt
     MenuItemOpen: TMenuItem;                          // Открыть...
-    SaveDialog1: TSaveDialog;                         // открытие файла *.txt
+    OpenDialog: TOpenDialog;                         // открытие файла *.txt
     MenuItemRef: TMenuItem;                           // Справка
     MenuItemRef_info: TMenuItem;                      // Справка > О программе...
     MenuItemRef_autor: TMenuItem;                     // Справка > Об авторе...
@@ -69,7 +69,7 @@ uses uController;
 // кнопка "Рассчитать"
 procedure Ttask.ButtonResultClick(Sender: TObject);
 begin
-  uController.CalculateAndShow;
+  uController.Result;
 end;
 
 // меню Сохранить...

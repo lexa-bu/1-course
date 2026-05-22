@@ -1,10 +1,10 @@
 object task: Ttask
-  Left = 1186
-  Height = 387
-  Top = 229
+  Left = 1061
+  Height = 404
+  Top = 253
   Width = 550
   Caption = 'Сила притяжения'
-  ClientHeight = 387
+  ClientHeight = 404
   ClientWidth = 550
   Menu = MainMenu1
   LCLVersion = '4.2.0.0'
@@ -42,15 +42,16 @@ object task: Ttask
     TabOrder = 2
   end
   object ButtonResult: TButton
-    Left = 12
+    Left = 11
     Height = 34
-    Hint = 'Кнопка "Рассчитать" расчитывает '#13#10'введенные данные по формуле справа.'
-    Top = 162
+    Hint = '(F2) Кнопка "Рассчитать" расчитывает '#13#10'введенные данные по формуле справа.'
+    Top = 160
     Width = 124
     Caption = 'Рассчитать'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 3
+    TabStop = False
     OnClick = ButtonResultClick
   end
   object Label_m1: TLabel
@@ -92,7 +93,7 @@ object task: Ttask
   object MemoHistory: TMemo
     AnchorSideBottom.Control = ButtonClear
     Left = 14
-    Height = 145
+    Height = 162
     Hint = '"История" выводит результаты вычислений.'
     Top = 208
     Width = 166
@@ -105,7 +106,7 @@ object task: Ttask
   end
   object Label_formuls: TLabel
     Left = 156
-    Height = 44
+    Height = 61
     Top = 152
     Width = 176
     Anchors = [akTop, akRight, akBottom]
@@ -122,7 +123,7 @@ object task: Ttask
     Left = 12
     Height = 25
     Hint = 'Кнопка "Очистить" очищает данные,'#13#10'включая введенные значения, результат'#13#10'и историю.'
-    Top = 353
+    Top = 370
     Width = 168
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 50
@@ -152,7 +153,7 @@ object task: Ttask
   end
   object Image: TImage
     Left = 204
-    Height = 144
+    Height = 161
     Top = 232
     Width = 332
     Anchors = [akTop, akRight, akBottom]
@@ -1035,7 +1036,7 @@ object task: Ttask
   end
   object LabelHotkeys: TLabel
     Left = 384
-    Height = 112
+    Height = 129
     Top = 112
     Width = 152
     Alignment = taRightJustify
@@ -1107,13 +1108,13 @@ object task: Ttask
       end
     end
   end
-  object SaveDialog1: TSaveDialog
+  object SaveDialog: TSaveDialog
     Title = 'Сохранить...'
     Filter = 'Текстовые файлы|*.txt'
     Left = 304
     Top = 359
   end
-  object OpenDialog1: TOpenDialog
+  object OpenDialog: TOpenDialog
     Title = 'Открыть...'
     Filter = 'Текстовые файлы|*.txt'
     Left = 376

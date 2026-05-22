@@ -3,8 +3,8 @@ unit uController;
 {$mode objfpc}{$H+}
 
 interface
-// считает и выводит результат
-procedure CalculateAndShow;
+// результат
+procedure Result;
 // сохранить данные в файл
 procedure SaveToFile;
 // загрузить данные из файла
@@ -14,10 +14,10 @@ procedure ClearAll;
 
 implementation
 
-uses SysUtils, Graphics, uView, uModel;
+uses SysUtils, Graphics, uView, uModel, Windows;
 
-// считает и выводит результат
-procedure CalculateAndShow;
+// результат
+procedure Result;
 var
   m1, m2, r, F: double;
 begin
@@ -31,6 +31,7 @@ begin
       task.MemoHistory.Lines.Add('❌ Ошибка: r должен быть > 0!');
       task.Label_res.Caption := '❌ Ошибка: r должен быть > 0!';
       task.Label_res.Font.Color := clRed;
+      MessageBeep(MB_ICONERROR);
       exit;
     end;
 
@@ -43,6 +44,7 @@ begin
     task.MemoHistory.Lines.Add('❌ Ошибка: введите корректные числа!');
     task.Label_res.Caption := '❌ Ошибка: введите корректные числа!';
     task.Label_res.Font.Color := clRed;
+    MessageBeep(MB_ICONERROR);
   end;
 end;
 
@@ -52,9 +54,9 @@ var
   f: TextFile;
   fileName: string;
 begin
-  if task.SaveDialog1.Execute then
+  if task.SaveDialog.Execute then
   begin
-    fileName := task.SaveDialog1.FileName;
+    fileName := task.SaveDialog.FileName;
     AssignFile(f, fileName);
     Rewrite(f);
 
@@ -67,6 +69,7 @@ begin
     task.MemoHistory.Lines.Add('✔  Файл успешно сохранён!');
     task.Label_res.Caption := '✔  Файл успешно сохранён!';
     task.Label_res.Font.Color := clGreen;
+    SysUtils.Beep;
   end;
 end;
 
@@ -74,12 +77,11 @@ end;
 procedure LoadFromFile;
 var
   f: TextFile;
-  fileName: string;
-  s_m1, s_m2, s_r: string;
+  fileName, s_m1, s_m2, s_r: string;
 begin
-  if task.OpenDialog1.Execute then
+  if task.OpenDialog.Execute then
   begin
-    fileName := task.OpenDialog1.FileName;
+    fileName := task.OpenDialog.FileName;
     AssignFile(f, fileName);
     Reset(f);
 
@@ -92,10 +94,9 @@ begin
     task.Edit_m1.Text := s_m1;
     task.Edit_m2.Text := s_m2;
     task.Edit_r.Text := s_r;
-
     task.MemoHistory.Lines.Add('✔  Данные успешно загружены!');
-
-    CalculateAndShow;
+    SysUtils.Beep;
+    Result;
   end;
 end;
 
