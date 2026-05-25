@@ -10,7 +10,7 @@ uses
   Forms,
   uView in 'uView.pas' {task},
   uModel in 'uModel.pas',
-  uController in 'uController.pas';
+  uController in 'uController.pas', hotkeys;
 
 {$R *.res}
 
@@ -18,6 +18,7 @@ begin
   RequireDerivedFormResource := True;
   Application.Scaled := True;
   Application.Initialize;
-  Application.CreateForm(Ttask, task);
+  Application.CreateForm(TTask, Task);
+  Application.CreateForm(TFormHotkeys, FormHotkeys);
   Application.Run;
 end.

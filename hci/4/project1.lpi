@@ -50,10 +50,17 @@
       <Unit>
         <Filename Value="uview.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="task"/>
+        <ComponentName Value="Task"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uView"/>
+      </Unit>
+      <Unit>
+        <Filename Value="hotkeys.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormHotkeys"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
       </Unit>
     </Units>
   </ProjectOptions>

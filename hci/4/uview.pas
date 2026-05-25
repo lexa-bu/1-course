@@ -1,3 +1,5 @@
+// Модуль uView: Отвечает за визуальный интерфейс, обработку действий пользователя и вывод результатов.
+// Автор: Булдыгеров Алексей
 unit uView;
 
 {$mode objfpc}{$H+}
@@ -5,14 +7,17 @@ unit uView;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  ActnList, Menus;
+  SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
+  ActnList, Menus, Windows, Classes;
 
 type
-  Ttask = class(TForm)
+
+  { TTask }
+
+  TTask = class(TForm)
     ActionList1: TActionList;                         // горячие клавиши
     ActionInfo: TAction;                              // о программе F1
-    ActionOpen: TAction;                              // открыть     Ctrl+O
+    ActionOpen: TAction;                              // открыть      Ctrl+O
     ActionSave: TAction;                              // сохранить   Ctrl+S
     ActionDel: TAction;                               // очистка     Del
     ActionResult: TAction;                            // рассчитать  F2
@@ -24,7 +29,6 @@ type
     Edit_m2: TEdit;                                   // ввод данных в m2
     Edit_r: TEdit;                                    // ввод данных в r
     Image: TImage;                                    // фото
-    LabelHotkeys: TLabel;                             // текст с горяч. клавиш
     Label_res: TLabel;                                // текст с результатом
     Label_task: TLabel;                               // текст с задачей
     Label_m1: TLabel;                                 // m1 (масса 1 тела в кг)
@@ -33,80 +37,202 @@ type
     Label_formuls: TLabel;                            // текст с формулами
     MemoHistory: TMemo;                               // история
     MainMenu1: TMainMenu;                             // меню
-    MenuItemSave: TMenuItem;                          // Сохранить...
-    SaveDialog: TSaveDialog;                         // сохранение файла *.txt
-    MenuItemOpen: TMenuItem;                          // Открыть...
-    OpenDialog: TOpenDialog;                         // открытие файла *.txt
+    MenuSave: TMenuItem;                              // Сохранить...
+    SaveDialog: TSaveDialog;                          // сохранение файла
+    MenuItemSave: TMenuItem;                          // Сохранить... > Сохранить данные
+    MenuItemSaveReport: TMenuItem;                    // Сохранить... > Сохранить отчёт
+    MenuOpen: TMenuItem;                              // Открыть...
+    OpenDialog: TOpenDialog;                          // открытие файла
+    MenuItemOpen: TMenuItem;                          // Открыть... > Открыть данные
+    MenuItemOpenReport: TMenuItem;                    // Открыть... > Открыть отчёт
     MenuItemRef: TMenuItem;                           // Справка
     MenuItemRef_info: TMenuItem;                      // Справка > О программе...
     MenuItemRef_autor: TMenuItem;                     // Справка > Об авторе...
-    // выход из программы
+    MenuItemRef_Hotkeys: TMenuItem;                   // Справка > Горячие клавиши
+    // Выход из программы
     procedure ActionExitExecute(Sender: TObject);
-    // кнопка "Очистить"
+    // Кнопка "Очистить".
+    // Очищает поля ввода. результат и историю.
     procedure ButtonClearClick(Sender: TObject);
-    // кнопка "Рассчитать"
+    // Кнопка "Рассчитать".
+    // Считывает данные. отправляет контроллеру и выводит результат / ошибку.
     procedure ButtonResultClick(Sender: TObject);
-    // меню Открыть...
-    procedure MenuItemOpenClick(Sender: TObject);
-    // меню Сохранить...
+    // Меню Сохранить... > Сохранить данные.
+    // Вызывает SaveDialog и передает данные контроллеру для записи в файл.
     procedure MenuItemSaveClick(Sender: TObject);
-    // меню Справка > Об авторе...
+    // Меню Сохранить... > Сохранить отчёт.
+    // Вызывает SaveDialog и записывает историю расчетов в файл.
+    procedure MenuItemSaveReportClick(Sender: TObject);
+    // Меню Открыть... > Открыть данные.
+    // Вызывает OpenDialog и загружает данные через контроллер
+    procedure MenuItemOpenClick(Sender: TObject);
+    // Меню Открыть... > Открыть отчёт.
+    // Вызывает OpenDialog и загружает историю расчетов из файла.
+    procedure MenuItemOpenReportClick(Sender: TObject);
+    // Меню Справка > Об авторе.
+    // Показывает окно с информацией об авторе.
     procedure MenuItemRef_autorClick(Sender: TObject);
-    // меню Справка > О программе...
+    // Меню Справка > О программе.
+    // Показывает окно с информацией о программе.
     procedure MenuItemRef_infoClick(Sender: TObject);
+    // Меню Справка > Горячие клавиши.
+    // Показывает Form с горячими клавишами.
+    procedure MenuItemRef_HotkeysClick(Sender: TObject);
   private
   public
   end;
 
 var
-  task: Ttask;
+  Task: TTask;
 
 implementation
 
-uses uController;
+uses uController, Hotkeys;
 
 {$R *.lfm}
-// кнопка "Рассчитать"
-procedure Ttask.ButtonResultClick(Sender: TObject);
+// Кнопка "Рассчитать".
+// Считывает данные. отправляет контроллеру и выводит результат / ошибку.
+procedure TTask.ButtonResultClick(Sender: TObject);
+var
+  m1, m2, r, F: double;
+  ErrorMsg: string;
 begin
-  uController.Result;
-end;
+  try
+    m1 := StrToFloat(Edit_m1.Text);
+    m2 := StrToFloat(Edit_m2.Text);
+    r  := StrToFloat(Edit_r.Text);
 
-// меню Сохранить...
-procedure Ttask.MenuItemSaveClick(Sender: TObject);
+    if uController.TryCalculate(m1, m2, r, F, ErrorMsg) then
+    begin
+      Label_res.Caption := Format('✔ F = %.2e Н', [F]);
+      Label_res.Font.Color := clGreen;
+      MemoHistory.Lines.Add(Format('✔ Расчет: m1=%.2f, m2=%.2f, r=%.2f, Ответ=%.2e Н', [m1, m2, r, F]));
+    end
+    else
+
+    begin
+      Label_res.Caption := '❌ Ошибка: ' + ErrorMsg;
+      Label_res.Font.Color := clRed;
+      MemoHistory.Lines.Add('❌ Ошибка: ' + ErrorMsg);
+      MessageBeep(MB_ICONERROR);
+    end;
+  except
+    Label_res.Caption := '❌ Ошибка: Введите корректные числа!';
+    Label_res.Font.Color := clRed;
+    MemoHistory.Lines.Add('❌ Ошибка: Введите корректные числа!');
+    MessageBeep(MB_ICONERROR);
+  end;
+end;
+// Меню Сохранить... > Сохранить данные.
+// Вызывает SaveDialog и передает данные контроллеру для записи в файл.
+procedure TTask.MenuItemSaveClick(Sender: TObject);
 begin
-  uController.SaveToFile;
-end;
+  if SaveDialog.Execute then
+  begin
+    uController.SaveData(SaveDialog.FileName, Edit_m1.Text, Edit_m2.Text, Edit_r.Text);
 
-// меню Открыть...
-procedure Ttask.MenuItemOpenClick(Sender: TObject);
+    MemoHistory.Lines.Add('✔ Данные успешно сохранены!');
+    Label_res.Caption := '✔ Данные успешно сохранены!';
+    Label_res.Font.Color := clGreen;
+    MessageBeep(MB_OK);
+  end;
+end;
+// Меню Сохранить... > Сохранить отчёт.
+// Вызывает SaveDialog и записывает историю расчетов в файл.
+procedure TTask.MenuItemSaveReportClick(Sender: TObject);
 begin
-  uController.LoadFromFile;
-end;
+  if SaveDialog.Execute then
+  begin
+    MemoHistory.Lines.SaveToFile(SaveDialog.FileName);
 
-// кнопка "Очистить"
-procedure Ttask.ButtonClearClick(Sender: TObject);
+    MemoHistory.Lines.Add('✔ Отчёт успешно сохранён!');
+    Label_res.Caption := '✔ Отчёт успешно сохранён!';
+    Label_res.Font.Color := clGreen;
+    MessageBeep(MB_OK);
+  end;
+end;
+// Меню Открыть... > Открыть данные.
+// Вызывает OpenDialog и загружает данные через контроллер
+procedure TTask.MenuItemOpenClick(Sender: TObject);
+var
+  s_m1, s_m2, s_r: string;
 begin
-  uController.ClearAll;
-end;
+  if OpenDialog.Execute then
+  begin
+    uController.LoadData(OpenDialog.FileName, s_m1, s_m2, s_r);
 
-// выход из программы
-procedure Ttask.ActionExitExecute(Sender: TObject);
+    Edit_m1.Text := s_m1;
+    Edit_m2.Text := s_m2;
+    Edit_r.Text  := s_r;
+
+    MemoHistory.Lines.Add('✔ Данные успешно загружены!');
+    Label_res.Caption := '✔ Данные успешно загружены!';
+    Label_res.Font.Color := clGreen;
+    MessageBeep(MB_OK);
+
+    ButtonResultClick(nil);
+  end;
+end;
+// Меню Открыть... > Открыть отчёт.
+// Вызывает OpenDialog и загружает историю расчетов из файла.
+procedure TTask.MenuItemOpenReportClick(Sender: TObject);
+begin
+  if OpenDialog.Execute then
+  begin
+    MemoHistory.Lines.LoadFromFile(OpenDialog.FileName);
+
+    MemoHistory.Lines.Add('✔ Отчёт успешно загружен!');
+    Label_res.Caption := '✔ Отчёт успешно загружен!';
+    Label_res.Font.Color := clGreen;
+    MessageBeep(MB_OK);
+  end;
+end;
+// Кнопка "Очистить".
+// Очищает поля ввода. результат и историю.
+procedure TTask.ButtonClearClick(Sender: TObject);
+begin
+  Edit_m1.Clear;
+  Edit_m2.Clear;
+  Edit_r.Clear;
+  Label_res.Caption := '';
+  MemoHistory.Lines.Clear;
+end;
+// Выход из программы.
+procedure TTask.ActionExitExecute(Sender: TObject);
 begin
   Close;
 end;
-
-// меню Справка > Об авторе...
-procedure Ttask.MenuItemRef_autorClick(Sender: TObject);
+// Меню Справка > Об авторе.
+// Показывает окно с информацией об авторе.
+procedure TTask.MenuItemRef_autorClick(Sender: TObject);
 begin
   MessageDlg('Об авторе', 'Автор: Булдыгеров Алексей.' + #13#10 +
   'Студент 2-го курса по специальности "Информатика и вычислительная техника".' + #13#10 +
   'Telegram: @sixteenfive', mtInformation, [mbOk], 0);
 end;
-// меню Справка > О программе...
-procedure Ttask.MenuItemRef_infoClick(Sender: TObject);
+// Меню Справка > О программе.
+// Показывает окно с информацией о программе.
+procedure TTask.MenuItemRef_infoClick(Sender: TObject);
 begin
   MessageDlg('О программе', 'Задача:' + #13#10 + 'Определить силу притяжения F между телами массы m1 и m2, находящимися на расстоянии r друг от друга.', mtInformation, [mbOk], 0);
 end;
+// Меню Справка > Горячие клавиши.
+// Показывает Form с горячими клавишами.
+procedure TTask.MenuItemRef_HotkeysClick(Sender: TObject);
+begin
+  if not Assigned(FormHotkeys) then
+    Application.CreateForm(TFormHotkeys, FormHotkeys);
 
+  if FormHotkeys.Visible then
+  begin
+    FormHotkeys.Hide;
+  end
+  else
+  begin
+    FormHotkeys.Left := Task.Left + Task.Width;
+    FormHotkeys.Top := Task.Top;
+    FormHotkeys.Show;
+    MessageBeep(MB_OK);
+  end;
+end;
 end.

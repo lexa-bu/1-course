@@ -1,113 +1,52 @@
+// Модуль uController: Проверяет корректность данных перед расчётом.
+// Автор: Булдыгеров Алексей
 unit uController;
 
 {$mode objfpc}{$H+}
 
 interface
-// результат
-procedure Result;
-// сохранить данные в файл
-procedure SaveToFile;
-// загрузить данные из файла
-procedure LoadFromFile;
-// очистить
-procedure ClearAll;
-
+// Проверяет входные данные на корректность и вызывает расчёт силы.
+// m1 и m2 - масса тел в кг;  r - расстояние между ними;
+// F - переменная для записи результата; ErrorMsg - переменная для записи ошибки.
+// Возвращает true (успех) или false (ошибка) при вычислении силы через F.
+function TryCalculate(m1, m2, r: double; out F: double; out ErrorMsg: string): boolean;
+// Передаёт комманду на сохранение данных в файл.
+procedure SaveData(fileName, m1, m2, r: string);
+// Передаёт комманду на загрузку данных в файл.
+procedure LoadData(fileName: string; out m1, m2, r: string);
 implementation
 
-uses SysUtils, Graphics, uView, uModel, Windows;
-
-// результат
-procedure Result;
-var
-  m1, m2, r, F: double;
+uses SysUtils, uModel;
+// Проверяет входные данные на корректность и вызывает расчёт силы.
+// m1 и m2 - масса тел в кг;  r - расстояние между ними;
+// F - переменная для записи результата; ErrorMsg - переменная для записи ошибки.
+// Возвращает true (успех) или false (ошибка) при вычислении силы через F.
+function TryCalculate(m1, m2, r: double; out F: double; out ErrorMsg: string): boolean;
 begin
-  try
-    m1 := StrToFloat(task.Edit_m1.Text);
-    m2 := StrToFloat(task.Edit_m2.Text);
-    r :=  StrToFloat(task.Edit_r.Text);
-
-    if r <= 0 then
-    begin
-      task.MemoHistory.Lines.Add('❌ Ошибка: r должен быть > 0!');
-      task.Label_res.Caption := '❌ Ошибка: r должен быть > 0!';
-      task.Label_res.Font.Color := clRed;
-      MessageBeep(MB_ICONERROR);
-      exit;
-    end;
-
-    F := Calculate(m1, m2, r);
-
-    task.Label_res.Caption := Format('✔  F = %.2e Н', [F]);
-    task.Label_res.Font.Color := clGreen;
-    task.MemoHistory.Lines.Add(Format('✔  Расчет: m1=%.2f, m2=%.2f, r=%.2f, Ответ=%.2e Н', [m1, m2, r, F]));
-  except
-    task.MemoHistory.Lines.Add('❌ Ошибка: введите корректные числа!');
-    task.Label_res.Caption := '❌ Ошибка: введите корректные числа!';
-    task.Label_res.Font.Color := clRed;
-    MessageBeep(MB_ICONERROR);
-  end;
-end;
-
-// сохранить данные в файл
-procedure SaveToFile;
-var
-  f: TextFile;
-  fileName: string;
-begin
-  if task.SaveDialog.Execute then
+  if r <= 0 then
   begin
-    fileName := task.SaveDialog.FileName;
-    AssignFile(f, fileName);
-    Rewrite(f);
-
-    writeln(f, task.Edit_m1.Text);
-    writeln(f, task.Edit_m2.Text);
-    writeln(f, task.Edit_r.Text);
-
-    CloseFile(f);
-
-    task.MemoHistory.Lines.Add('✔  Файл успешно сохранён!');
-    task.Label_res.Caption := '✔  Файл успешно сохранён!';
-    task.Label_res.Font.Color := clGreen;
-    SysUtils.Beep;
+    ErrorMsg := 'r должно быть > 0!';
+    Exit(False);
   end;
-end;
 
-// загрузить данные из файла
-procedure LoadFromFile;
-var
-  f: TextFile;
-  fileName, s_m1, s_m2, s_r: string;
-begin
-  if task.OpenDialog.Execute then
+  if (m1 < 0) or (m2 < 0) then
   begin
-    fileName := task.OpenDialog.FileName;
-    AssignFile(f, fileName);
-    Reset(f);
-
-    readln(f, s_m1);
-    readln(f, s_m2);
-    readln(f, s_r);
-
-    CloseFile(f);
-
-    task.Edit_m1.Text := s_m1;
-    task.Edit_m2.Text := s_m2;
-    task.Edit_r.Text := s_r;
-    task.MemoHistory.Lines.Add('✔  Данные успешно загружены!');
-    SysUtils.Beep;
-    Result;
+    ErrorMsg := 'm не может быть < 0!';
+    Exit(False);
   end;
-end;
 
-// очистить
-procedure ClearAll;
+  F := uModel.Calculate(m1, m2, r);
+  Result := True;
+end;
+// Передаёт комманду на сохранение данных в файл.
+procedure SaveData(fileName, m1, m2, r: string);
 begin
-  task.Edit_m1.Clear;
-  task.Edit_m2.Clear;
-  task.Edit_r.Clear;
-  task.Label_res.Caption := '';
-  task.MemoHistory.Lines.Clear;
+  uModel.SaveToData(fileName, m1, m2, r);
+end;
+// Передаёт комманду на загрузку данных в файл.
+procedure LoadData(fileName: string; out m1, m2, r: string);
+begin
+  uModel.LoadFromData(fileName, m1, m2, r);
 end;
 
 end.

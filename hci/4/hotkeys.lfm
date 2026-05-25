@@ -1,0 +1,28 @@
+object FormHotkeys: TFormHotkeys
+  Left = 1322
+  Height = 170
+  Top = 194
+  Width = 250
+  Caption = 'Горячие клавиши'
+  ClientHeight = 170
+  ClientWidth = 250
+  LCLVersion = '4.2.0.0'
+  object LabelHotkeys: TLabel
+    Left = 0
+    Height = 163
+    Top = 0
+    Width = 251
+    Alignment = taCenter
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    Caption = 'Горячие клавиши'#13#10'----------------------------'#13#10'F1 – Горячие клавиши'#13#10'Tab – Следующая позиция'#13#10'F2 – Рассчитать'#13#10'Ctrl + S – Сохранить данные расчёта'#13#10'Ctrl + Shift+ S – Сохранить отчёт'#13#10'Ctrl + O – Открыть расчёт'#13#10'Ctrl + Shift + O – Открыть отчёт'#13#10'Del – Очистить'#13#10'Ctrl + Q или Esc – Выход из программы'
+    Color = clWindowFrame
+    Font.CharSet = RUSSIAN_CHARSET
+    Font.Color = clBlack
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+end

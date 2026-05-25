@@ -6,15 +6,18 @@ object MainForm: TMainForm
   Caption = 'Игрушки'
   ClientHeight = 200
   ClientWidth = 470
-  Menu = MainMenu1
+  Menu = MainMenu
   LCLVersion = '4.2.0.0'
-  object StringGrid1: TStringGrid
+  object StringGrid: TStringGrid
     Left = 0
     Height = 200
     Top = 0
     Width = 470
     Anchors = [akTop, akLeft, akRight, akBottom]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+    RowCount = 1
     TabOrder = 0
+    OnSetEditText = StringGridSetEditText
     ColWidths = (
       24
       199
@@ -41,23 +44,35 @@ object MainForm: TMainForm
       'До m-лет'
     )
   end
-  object MainMenu1: TMainMenu
+  object MainMenu: TMainMenu
     Left = 8
     Top = 160
     object SaveMenuItem: TMenuItem
       Caption = 'Сохранить...'
+      ShortCut = 16467
       OnClick = SaveMenuItemClick
     end
     object OpenMenuItem: TMenuItem
       Caption = 'Открыть...'
+      ShortCut = 16463
       OnClick = OpenMenuItemClick
     end
+    object FindMenuItem: TMenuItem
+      Caption = 'Найти'
+      ShortCut = 113
+      OnClick = FindMenuItemClick
+    end
+    object ExitMenuItem: TMenuItem
+      Caption = 'Выход'
+      ShortCut = 27
+      OnClick = ExitMenuItemClick
+    end
   end
-  object OpenDialog1: TOpenDialog
+  object OpenDialog: TOpenDialog
     Left = 48
     Top = 160
   end
-  object SaveDialog1: TSaveDialog
+  object SaveDialog: TSaveDialog
     Left = 88
     Top = 160
   end

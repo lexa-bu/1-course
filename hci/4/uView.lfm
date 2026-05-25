@@ -1,7 +1,7 @@
-object task: Ttask
-  Left = 1061
+object Task: TTask
+  Left = 771
   Height = 404
-  Top = 253
+  Top = 193
   Width = 550
   Caption = 'Сила притяжения'
   ClientHeight = 404
@@ -122,7 +122,7 @@ object task: Ttask
   object ButtonClear: TButton
     Left = 12
     Height = 25
-    Hint = 'Кнопка "Очистить" очищает данные,'#13#10'включая введенные значения, результат'#13#10'и историю.'
+    Hint = '(Del) Кнопка "Очистить" очищает данные,'#13#10'включая введенные значения, результат'#13#10'и историю.'
     Top = 370
     Width = 168
     Anchors = [akLeft, akRight, akBottom]
@@ -1034,17 +1034,6 @@ object task: Ttask
       FC32192FC3FCF6FF1F21548CC2A911B1CA0000000049454E44AE426082
     }
   end
-  object LabelHotkeys: TLabel
-    Left = 384
-    Height = 129
-    Top = 112
-    Width = 152
-    Alignment = taRightJustify
-    Anchors = [akTop, akRight, akBottom]
-    AutoSize = False
-    Caption = 'Горячие клавиши:'#13#10'Tab - Следующая позиция'#13#10'F2 - Расчитать'#13#10'Ctrl + S - Сохранить...'#13#10'Ctrl + O - Открыть...'#13#10'Del - Очистить'#13#10'Ctrl + Q, Esc - Выход'
-    ParentBidiMode = False
-  end
   object ActionList1: TActionList
     OnChange = ButtonResultClick
     Left = 520
@@ -1072,39 +1061,69 @@ object task: Ttask
     object ActionSave: TAction
       Caption = 'ActionSave'
       ShortCut = 16467
-      OnExecute = MenuItemSaveClick
     end
     object ActionOpen: TAction
       Caption = 'ActionOpen'
       ShortCut = 16463
-      OnExecute = MenuItemOpenClick
     end
     object ActionInfo: TAction
       Caption = 'ActionInfo'
       ShortCut = 112
-      OnExecute = MenuItemRef_autorClick
     end
   end
   object MainMenu1: TMainMenu
     Left = 448
     Top = 359
-    object MenuItemSave: TMenuItem
+    object MenuSave: TMenuItem
       Caption = 'Сохранить...'
-      OnClick = MenuItemSaveClick
+      object MenuItemSave: TMenuItem
+        Caption = 'Сохранить данные'
+        Hint = '(Ctrl + S) Сохраняет данные расчета.'
+        ShortCut = 16467
+        OnClick = MenuItemSaveClick
+      end
+      object MenuItemSaveReport: TMenuItem
+        Caption = 'Сохранить отчёт'
+        Hint = '(Ctrl + Shift + S) Сохраняет данные отчёта.'
+        ShortCut = 24659
+        OnClick = MenuItemSaveReportClick
+      end
     end
-    object MenuItemOpen: TMenuItem
+    object MenuOpen: TMenuItem
       Caption = 'Открыть...'
-      OnClick = MenuItemOpenClick
+      object MenuItemOpen: TMenuItem
+        Caption = 'Открыть данные'
+        Hint = '(Ctrl + O) Открывает данные расчётов.'
+        ShortCut = 16463
+        OnClick = MenuItemOpenClick
+      end
+      object MenuItemOpenReport: TMenuItem
+        Caption = 'Открыть отчёт'
+        Hint = '(Ctrl + Shift + O) Открывает данные отчёта.'
+        ShortCut = 24655
+        OnClick = MenuItemOpenReportClick
+      end
     end
     object MenuItemRef: TMenuItem
       Caption = 'Справка'
+      ShortCut = 16463
       object MenuItemRef_info: TMenuItem
-        Caption = 'О прорграмме...'
+        Caption = 'О прорграмме'
+        Hint = '(F11) Информация о программе.'
+        ShortCut = 122
         OnClick = MenuItemRef_infoClick
       end
       object MenuItemRef_autor: TMenuItem
-        Caption = 'Об авторе...'
+        Caption = 'Об авторе'
+        Hint = '(F12) Информация об авторе.'
+        ShortCut = 123
         OnClick = MenuItemRef_autorClick
+      end
+      object MenuItemRef_Hotkeys: TMenuItem
+        Caption = 'Горячие клавиши'
+        Hint = '(F1) Выводит горячие клавиши.'
+        ShortCut = 112
+        OnClick = MenuItemRef_HotkeysClick
       end
     end
   end
