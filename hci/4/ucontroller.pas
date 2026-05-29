@@ -23,17 +23,24 @@ uses SysUtils, uModel;
 // Возвращает true (успех) или false (ошибка) при вычислении силы через F.
 function TryCalculate(m1, m2, r: double; out F: double; out ErrorMsg: string): boolean;
 begin
+  if m1 < 0 then
+  begin
+    ErrorMsg := 'm1 не может быть < 0!';
+    Exit(False);
+  end;
+
+  if m2 < 0 then
+  begin
+    ErrorMsg := 'm2 не может быть < 0!';
+    Exit(False);
+  end;
+
   if r <= 0 then
   begin
     ErrorMsg := 'r должно быть > 0!';
     Exit(False);
   end;
 
-  if (m1 < 0) or (m2 < 0) then
-  begin
-    ErrorMsg := 'm не может быть < 0!';
-    Exit(False);
-  end;
 
   F := uModel.Calculate(m1, m2, r);
   Result := True;
