@@ -11,9 +11,9 @@ interface
 // Возвращает true (успех) или false (ошибка) при вычислении силы через F.
 function TryCalculate(m1, m2, r: double; out F: double; out ErrorMsg: string): boolean;
 // Передаёт комманду на сохранение данных в файл.
-procedure SaveData(fileName, m1, m2, r: string);
+procedure SaveData(fileName: string; m1, m2, r: double);
 // Передаёт комманду на загрузку данных в файл.
-procedure LoadData(fileName: string; out m1, m2, r: string);
+procedure LoadData(fileName: string; out m1, m2, r: double);
 implementation
 
 uses SysUtils, uModel;
@@ -41,19 +41,25 @@ begin
     Exit(False);
   end;
 
-
   F := uModel.Calculate(m1, m2, r);
   Result := True;
 end;
+
+
 // Передаёт комманду на сохранение данных в файл.
-procedure SaveData(fileName, m1, m2, r: string);
+// fileName - путь к файлу; m1, m2, r - значения, которые будут записаны.
+procedure SaveData(fileName: string; m1, m2, r: double);
 begin
   uModel.SaveToData(fileName, m1, m2, r);
 end;
+
+
 // Передаёт комманду на загрузку данных в файл.
-procedure LoadData(fileName: string; out m1, m2, r: string);
+// fileName - путь к файлу; m1, m2, r - значения, которые будут загружены из файла.
+procedure LoadData(fileName: string; out m1, m2, r: double);
 begin
   uModel.LoadFromData(fileName, m1, m2, r);
 end;
+
 
 end.

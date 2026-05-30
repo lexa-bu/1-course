@@ -11,9 +11,11 @@ interface
 // Возвращает значение вычесленной гравитационной силы в Ньютонах.
 function Calculate(m1, m2, r: double): double;
 // Сохраняет введённые данные в файл.
-procedure SaveToData(fileName, m1, m2, r: string);
+// fileName - путь к файлу; m1, m2, r - значения, которые будут записаны.
+procedure SaveToData(fileName: string; m1, m2, r: double);
 // Загружает данные из файла.
-procedure LoadFromData(fileName: string; out m1, m2, r: string);
+// fileName - путь к файлу; m1, m2, r - значения, которые будут загружены из файла.
+procedure LoadFromData(fileName: string; out m1, m2, r: double);
 
 implementation
 
@@ -26,33 +28,43 @@ const
 begin
   Result := G * m1 * m2 / (r * r);
 end;
+
+
 // Сохраняет введённые данные в файл.
-procedure SaveToData(fileName, m1, m2, r: string);
+// fileName - путь к файлу; m1, m2, r - значения, которые будут записаны.
+procedure SaveToData(fileName: string; m1, m2, r: double);
 var
   f: TextFile;
 begin
   AssignFile(f, fileName);
+  try
   Rewrite(f);
 
   writeln(f, m1);
   writeln(f, m2);
   writeln(f, r);
-
+  finally
   CloseFile(f);
+  end;
 end;
+
+
 // Загружает данные из файла.
-procedure LoadFromData(fileName: string; out m1, m2, r: string);
+// fileName - путь к файлу; m1, m2, r - значения, которые будут загружены из файла.
+procedure LoadFromData(fileName: string; out m1, m2, r: double);
 var
   f: TextFile;
 begin
   AssignFile(f, fileName);
+  try
   Reset(f);
 
   readln(f, m1);
   readln(f, m2);
   readln(f, r);
-
+  finally
   CloseFile(f);
+  end;
 end;
 
 end.

@@ -12,7 +12,7 @@ object Task: TTask
     Left = 34
     Height = 23
     Hint = 'Введите значение в m1.'
-    Top = 48
+    Top = 47
     Width = 101
     Anchors = [akTop, akLeft, akRight]
     ParentShowHint = False

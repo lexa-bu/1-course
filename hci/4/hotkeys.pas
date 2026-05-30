@@ -8,7 +8,7 @@
   type
     { TFormHotkeys }
     TFormHotkeys = class(TForm)
-      LabelHotkeys: TLabel;
+      LabelHotkeys: TLabel;   // Отображение горячих клавиш
     private
     public
     end;

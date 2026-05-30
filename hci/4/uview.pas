@@ -92,6 +92,7 @@ uses uController, Hotkeys;
 {$R *.lfm}
 // Кнопка "Рассчитать".
 // Считывает данные. отправляет контроллеру и выводит результат / ошибку.
+// m1 и m2 - масса тел в кг;  r - расстояние между ними; F - гравитационная сила.
 procedure TTask.ButtonResultClick(Sender: TObject);
 var
   m1, m2, r, F: double;
@@ -123,13 +124,18 @@ begin
     MessageBeep(MB_ICONERROR);
   end;
 end;
+
+
 // Меню Сохранить... > Сохранить данные.
 // Вызывает SaveDialog и передает данные контроллеру для записи в файл.
 procedure TTask.MenuItemSaveClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
   begin
-    uController.SaveData(SaveDialog.FileName, Edit_m1.Text, Edit_m2.Text, Edit_r.Text);
+    uController.SaveData(SaveDialog.FileName,
+    StrToFloat(Edit_m1.Text),
+    StrToFloat(Edit_m2.Text),
+    StrToFloat(Edit_r.Text));
 
     MemoHistory.Lines.Add('✔ Данные успешно сохранены!');
     Label_res.Caption := '✔ Данные успешно сохранены!';
@@ -137,6 +143,8 @@ begin
     MessageBeep(MB_OK);
   end;
 end;
+
+
 // Меню Сохранить... > Сохранить отчёт.
 // Вызывает SaveDialog и записывает историю расчетов в файл.
 procedure TTask.MenuItemSaveReportClick(Sender: TObject);
@@ -151,19 +159,22 @@ begin
     MessageBeep(MB_OK);
   end;
 end;
+
+
 // Меню Открыть... > Открыть данные.
-// Вызывает OpenDialog и загружает данные через контроллер
+// Вызывает OpenDialog и загружает данные через контроллер.
+// m1 и m2 - масса тел в кг;  r - расстояние между ними.
 procedure TTask.MenuItemOpenClick(Sender: TObject);
 var
-  m1, m2, r: string;
+  m1, m2, r: double;
 begin
   if OpenDialog.Execute then
   begin
     uController.LoadData(OpenDialog.FileName, m1, m2, r);
 
-    Edit_m1.Text := m1;
-    Edit_m2.Text := m2;
-    Edit_r.Text  := r;
+    Edit_m1.Text := FloatToStr(m1);
+    Edit_m2.Text := FloatToStr(m2);
+    Edit_r.Text  := FloatToStr(r);
 
     MemoHistory.Lines.Add('✔ Данные успешно загружены!');
     Label_res.Caption := '✔ Данные успешно загружены!';
@@ -173,20 +184,32 @@ begin
     ButtonResultClick(nil);
   end;
 end;
+
+
 // Меню Открыть... > Открыть отчёт.
 // Вызывает OpenDialog и загружает историю расчетов из файла.
 procedure TTask.MenuItemOpenReportClick(Sender: TObject);
 begin
   if OpenDialog.Execute then
   begin
-    MemoHistory.Lines.LoadFromFile(OpenDialog.FileName);
-
-    MemoHistory.Lines.Add('✔ Отчёт успешно загружен!');
-    Label_res.Caption := '✔ Отчёт успешно загружен!';
-    Label_res.Font.Color := clGreen;
-    MessageBeep(MB_OK);
+    try
+      MemoHistory.Lines.LoadFromFile(OpenDialog.FileName);
+      MemoHistory.Lines.Add('✔ Отчёт успешно загружен!');
+      Label_res.Caption := '✔ Отчёт успешно загружен!';
+      Label_res.Font.Color := clGreen;
+      MessageBeep(MB_OK);
+    except
+      on E: Exception do
+      begin
+        Label_res.Caption := '❌ Ошибка: ' + E.Message;
+        Label_res.Font.Color := clRed;
+        MemoHistory.Lines.Add('❌ Ошибка: ' + E.Message);
+        MessageBeep(MB_ICONERROR);
+      end;
+    end;
   end;
 end;
+
 // Кнопка "Очистить".
 // Очищает поля ввода. результат и историю.
 procedure TTask.ButtonClearClick(Sender: TObject);
@@ -197,11 +220,15 @@ begin
   Label_res.Caption := '';
   MemoHistory.Lines.Clear;
 end;
+
+
 // Выход из программы.
 procedure TTask.ActionExitExecute(Sender: TObject);
 begin
   Close;
 end;
+
+
 // Меню Справка > Об авторе.
 // Показывает окно с информацией об авторе.
 procedure TTask.MenuItemRef_autorClick(Sender: TObject);
@@ -210,14 +237,18 @@ begin
   'Студент 2-го курса по специальности "Информатика и вычислительная техника".' + #13#10 +
   'Telegram: @sixteenfive', mtInformation, [mbOk], 0);
 end;
+
+
 // Меню Справка > О программе.
 // Показывает окно с информацией о программе.
 procedure TTask.MenuItemRef_infoClick(Sender: TObject);
 begin
   MessageDlg('О программе', 'Задача:' + #13#10 + 'Определить силу притяжения F между телами массы m1 и m2, находящимися на расстоянии r друг от друга.', mtInformation, [mbOk], 0);
 end;
+
+
 // Меню Справка > Горячие клавиши.
-// Показывает Form с горячими клавишами.
+// Показывает TFormHotkeys с горячими клавишами.
 procedure TTask.MenuItemRef_HotkeysClick(Sender: TObject);
 begin
   if not Assigned(FormHotkeys) then
@@ -235,4 +266,6 @@ begin
     MessageBeep(MB_OK);
   end;
 end;
+
+
 end.
