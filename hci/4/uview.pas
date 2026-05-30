@@ -155,15 +155,15 @@ end;
 // Вызывает OpenDialog и загружает данные через контроллер
 procedure TTask.MenuItemOpenClick(Sender: TObject);
 var
-  s_m1, s_m2, s_r: string;
+  m1, m2, r: string;
 begin
   if OpenDialog.Execute then
   begin
-    uController.LoadData(OpenDialog.FileName, s_m1, s_m2, s_r);
+    uController.LoadData(OpenDialog.FileName, m1, m2, r);
 
-    Edit_m1.Text := s_m1;
-    Edit_m2.Text := s_m2;
-    Edit_r.Text  := s_r;
+    Edit_m1.Text := m1;
+    Edit_m2.Text := m2;
+    Edit_r.Text  := r;
 
     MemoHistory.Lines.Add('✔ Данные успешно загружены!');
     Label_res.Caption := '✔ Данные успешно загружены!';
