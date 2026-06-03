@@ -1,7 +1,7 @@
 object Task: TTask
-  Left = 771
+  Left = 1004
   Height = 404
-  Top = 193
+  Top = 43
   Width = 550
   Caption = 'Сила притяжения'
   ClientHeight = 404
