@@ -93,34 +93,39 @@ uses uController, Hotkeys;
 // Кнопка "Рассчитать".
 // Считывает данные. отправляет контроллеру и выводит результат / ошибку.
 // m1 и m2 - масса тел в кг;  r - расстояние между ними; F - гравитационная сила.
+// ErrorMsg - Переменная для поулчения текста ошибки от uController.
 procedure TTask.ButtonResultClick(Sender: TObject);
 var
   m1, m2, r, F: double;
   ErrorMsg: string;
 begin
   try
-    m1 := StrToFloat(Edit_m1.Text);
+    m1 := StrToFloat(Edit_m1.Text);  // Переобразование с полей ввода (string) в float.
     m2 := StrToFloat(Edit_m2.Text);
     r  := StrToFloat(Edit_r.Text);
 
-    if uController.TryCalculate(m1, m2, r, F, ErrorMsg) then
-    begin
+    if uController.TryCalculate(m1, m2, r, F, ErrorMsg) then // Передает в uController данные для проверки.
+    begin                                                    // Все успешно.
       Label_res.Caption := Format('✔ F = %.2e Н', [F]);
       Label_res.Font.Color := clGreen;
-      MemoHistory.Lines.Add(Format('✔ Расчет: m1=%.2f, m2=%.2f, r=%.2f, Ответ=%.2e Н', [m1, m2, r, F]));
+      MemoHistory.Lines.Add(Format('✔ Расчет: m1=%.2f, m2=%.2f, r=%.2f', [m1, m2, r]));
+      MemoHistory.Lines.Add(Format('Ответ: %.2e Н', [F]));
+      MemoHistory.Lines.Add('');
     end
-    else
+    else                                                     // Иначе (ошибка).
 
     begin
       Label_res.Caption := '❌ Ошибка: ' + ErrorMsg;
       Label_res.Font.Color := clRed;
       MemoHistory.Lines.Add('❌ Ошибка: ' + ErrorMsg);
+      MemoHistory.Lines.Add('');
       MessageBeep(MB_ICONERROR);
     end;
-  except
+  except // Если пользователь ввел некорректные данные (пустота, буквы, символы и т.д.).
     Label_res.Caption := '❌ Ошибка: Введите корректные числа!';
     Label_res.Font.Color := clRed;
     MemoHistory.Lines.Add('❌ Ошибка: Введите корректные числа!');
+    MemoHistory.Lines.Add('');
     MessageBeep(MB_ICONERROR);
   end;
 end;
@@ -130,16 +135,18 @@ end;
 // Вызывает SaveDialog и передает данные контроллеру для записи в файл.
 procedure TTask.MenuItemSaveClick(Sender: TObject);
 begin
-  if SaveDialog.Execute then
+  if SaveDialog.Execute then // Открывает окно Windows и возвращает 2 значения:
+                             // true - Сохранить (запуск кода), false - Отмена.
   begin
-    uController.SaveData(SaveDialog.FileName,
-    StrToFloat(Edit_m1.Text),
+    uController.SaveData(SaveDialog.FileName, // Обращение к модулю uController.
+    StrToFloat(Edit_m1.Text), // Переобразование с полей ввода (string) в float.
     StrToFloat(Edit_m2.Text),
     StrToFloat(Edit_r.Text));
 
-    MemoHistory.Lines.Add('✔ Данные успешно сохранены!');
     Label_res.Caption := '✔ Данные успешно сохранены!';
     Label_res.Font.Color := clGreen;
+    MemoHistory.Lines.Add('✔ Данные успешно сохранены!');
+    MemoHistory.Lines.Add('');
     MessageBeep(MB_OK);
   end;
 end;
@@ -149,17 +156,19 @@ end;
 // Вызывает SaveDialog и записывает историю расчетов в файл.
 procedure TTask.MenuItemSaveReportClick(Sender: TObject);
 begin
-  if SaveDialog.Execute then
+  if SaveDialog.Execute then // Открывает окно Windows и возвращает 2 значения:
+                             // true - Сохранить (запуск кода), false - Отмена.
   begin
-    MemoHistory.Lines.SaveToFile(SaveDialog.FileName);
+    uController.SaveReport(SaveDialog.FileName, // Обращение к модулю uController.
+    MemoHistory.Lines.Text);  // Передача отчёта (string) для записи.
 
-    MemoHistory.Lines.Add('✔ Отчёт успешно сохранён!');
     Label_res.Caption := '✔ Отчёт успешно сохранён!';
     Label_res.Font.Color := clGreen;
+    MemoHistory.Lines.Add('✔ Отчёт успешно сохранён!');
+    MemoHistory.Lines.Add('');
     MessageBeep(MB_OK);
   end;
 end;
-
 
 // Меню Открыть... > Открыть данные.
 // Вызывает OpenDialog и загружает данные через контроллер.
@@ -170,18 +179,32 @@ var
 begin
   if OpenDialog.Execute then
   begin
-    uController.LoadData(OpenDialog.FileName, m1, m2, r);
+    try
+      uController.LoadData(OpenDialog.FileName, m1, m2, r);
+    except
+      on E: Exception do
+      begin
+        Label_res.Caption := '❌ Ошибка: ' + E.Message;
+        Label_res.Font.Color := clRed;
+        MemoHistory.Lines.Add('❌ Ошибка: ' + E.Message);
+        MemoHistory.Lines.Add('');
+        MessageBeep(MB_ICONERROR);
+        Exit;
+      end;
+    end;
 
     Edit_m1.Text := FloatToStr(m1);
     Edit_m2.Text := FloatToStr(m2);
     Edit_r.Text  := FloatToStr(r);
 
-    MemoHistory.Lines.Add('✔ Данные успешно загружены!');
     Label_res.Caption := '✔ Данные успешно загружены!';
     Label_res.Font.Color := clGreen;
+    MemoHistory.Lines.Add('✔ Данные успешно загружены!');
+    MemoHistory.Lines.Add('');
+
     MessageBeep(MB_OK);
 
-    ButtonResultClick(nil);
+    ButtonResultClick(nil);     // Иммитация нажатия кнопки "Рассчитать".
   end;
 end;
 
@@ -189,24 +212,33 @@ end;
 // Меню Открыть... > Открыть отчёт.
 // Вызывает OpenDialog и загружает историю расчетов из файла.
 procedure TTask.MenuItemOpenReportClick(Sender: TObject);
+var
+  ReportText: string; // Переменная для хранения загруженного текста отчёта.
 begin
   if OpenDialog.Execute then
   begin
     try
-      MemoHistory.Lines.LoadFromFile(OpenDialog.FileName);
-      MemoHistory.Lines.Add('✔ Отчёт успешно загружен!');
-      Label_res.Caption := '✔ Отчёт успешно загружен!';
-      Label_res.Font.Color := clGreen;
-      MessageBeep(MB_OK);
+      uController.LoadReport(OpenDialog.FileName, ReportText); // Загрузка текста из файла в переменную.
     except
       on E: Exception do
       begin
         Label_res.Caption := '❌ Ошибка: ' + E.Message;
         Label_res.Font.Color := clRed;
         MemoHistory.Lines.Add('❌ Ошибка: ' + E.Message);
+        MemoHistory.Lines.Add('');
         MessageBeep(MB_ICONERROR);
+        Exit;
       end;
     end;
+
+    MemoHistory.Lines.Text := ReportText; // Присвоение загруженного текста компоненту Memo.
+
+    Label_res.Caption := '✔ Отчёт успешно загружен!';
+    Label_res.Font.Color := clGreen;
+    MemoHistory.Lines.Add('✔ Отчёт успешно загружен!');
+    MemoHistory.Lines.Add('');
+
+    MessageBeep(MB_OK);
   end;
 end;
 

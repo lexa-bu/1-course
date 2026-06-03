@@ -7,7 +7,7 @@ object Task: TTask
   ClientHeight = 404
   ClientWidth = 550
   Menu = MainMenu1
-  LCLVersion = '4.2.0.0'
+  LCLVersion = '4.6.0.0'
   object Edit_m1: TEdit
     Left = 34
     Height = 23
@@ -77,9 +77,9 @@ object Task: TTask
   end
   object Label_task: TLabel
     Left = 40
-    Height = 44
+    Height = 34
     Top = 0
-    Width = 472
+    Width = 431
     Alignment = taCenter
     Caption = 'Определить силу притяжения F между телами массы m1 и m2,'#13#10'находящимся на расстоянии r друг от друга.'
     Font.CharSet = RUSSIAN_CHARSET
@@ -100,15 +100,16 @@ object Task: TTask
     Anchors = [akTop, akLeft, akRight, akBottom]
     ParentShowHint = False
     ReadOnly = True
+    ScrollBars = ssVertical
     ShowHint = True
     TabOrder = 4
     TabStop = False
   end
   object Label_formuls: TLabel
-    Left = 156
+    Left = 169
     Height = 61
     Top = 152
-    Width = 176
+    Width = 163
     Anchors = [akTop, akRight, akBottom]
     Caption = 'G = 6.674e-11'#13#10'F = G * (m1 * m2) / (r * r)'
     Font.CharSet = RUSSIAN_CHARSET

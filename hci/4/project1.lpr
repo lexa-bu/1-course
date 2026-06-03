@@ -16,7 +16,8 @@ uses
 
 begin
   RequireDerivedFormResource := True;
-  Application.Scaled := True;
+  Application.Title:='Сила притяжения';
+  Application.Scaled:=True;
   Application.Initialize;
   Application.CreateForm(TTask, Task);
   Application.CreateForm(TFormHotkeys, FormHotkeys);

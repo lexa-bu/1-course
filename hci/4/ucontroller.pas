@@ -14,6 +14,11 @@ function TryCalculate(m1, m2, r: double; out F: double; out ErrorMsg: string): b
 procedure SaveData(fileName: string; m1, m2, r: double);
 // Передаёт комманду на загрузку данных в файл.
 procedure LoadData(fileName: string; out m1, m2, r: double);
+// Передаёт комманду на сохранение отчёта в файл.
+procedure SaveReport (fileName, report: string);
+// Передаёт комманду на загрузку отчёта в файл.
+procedure LoadReport(fileName: string; out report: string);
+
 implementation
 
 uses SysUtils, uModel;
@@ -22,7 +27,7 @@ uses SysUtils, uModel;
 // F - переменная для записи результата; ErrorMsg - переменная для записи ошибки.
 // Возвращает true (успех) или false (ошибка) при вычислении силы через F.
 function TryCalculate(m1, m2, r: double; out F: double; out ErrorMsg: string): boolean;
-begin
+begin // проверки
   if m1 < 0 then
   begin
     ErrorMsg := 'm1 не может быть < 0!';
@@ -41,7 +46,7 @@ begin
     Exit(False);
   end;
 
-  F := uModel.Calculate(m1, m2, r);
+  F := uModel.Calculate(m1, m2, r); // Передает данные в uModel.
   Result := True;
 end;
 
@@ -50,7 +55,7 @@ end;
 // fileName - путь к файлу; m1, m2, r - значения, которые будут записаны.
 procedure SaveData(fileName: string; m1, m2, r: double);
 begin
-  uModel.SaveToData(fileName, m1, m2, r);
+  uModel.SaveToData(fileName, m1, m2, r);    // Обращение к модулю uModel.
 end;
 
 
@@ -58,7 +63,20 @@ end;
 // fileName - путь к файлу; m1, m2, r - значения, которые будут загружены из файла.
 procedure LoadData(fileName: string; out m1, m2, r: double);
 begin
-  uModel.LoadFromData(fileName, m1, m2, r);
+  uModel.LoadFromData(fileName, m1, m2, r);  // Обращение к модулю uModel.
+end;
+
+
+// Передаёт комманду на сохранение отчёта в файл.
+procedure SaveReport(fileName, report: string);
+begin
+  uModel.SaveToReport(fileName, report);     // Обращение к модулю uModel.
+end;
+
+// Передаёт комманду на загрузку отчёта в файл.
+procedure LoadReport(fileName: string; out report: string);
+begin
+  uModel.OpenFromReport(fileName, report);   // Обращение к модулю uModel.
 end;
 
 
