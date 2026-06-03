@@ -97,7 +97,7 @@ var
   f: TextFile;             // Файловая переменная.
   line: string;            // Строка для чтения.
 begin
-  report := '';
+  report := '';            // Очистка.
   AssignFile(f, fileName); // Связь f с путём к файлу.
   try
   Reset(f);                // Открытие файла.

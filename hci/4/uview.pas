@@ -177,12 +177,13 @@ procedure TTask.MenuItemOpenClick(Sender: TObject);
 var
   m1, m2, r: double;
 begin
-  if OpenDialog.Execute then
+  if OpenDialog.Execute then // Открывает окно Windows и возвращает 2 значения:
+                             // true - Открыть (запуск кода), false - Отмена.
   begin
     try
-      uController.LoadData(OpenDialog.FileName, m1, m2, r);
+      uController.LoadData(OpenDialog.FileName, m1, m2, r);  // Чтение с uController.
     except
-      on E: Exception do
+      on E: Exception do     // Блок обработки ошибок.
       begin
         Label_res.Caption := '❌ Ошибка: ' + E.Message;
         Label_res.Font.Color := clRed;
@@ -193,7 +194,7 @@ begin
       end;
     end;
 
-    Edit_m1.Text := FloatToStr(m1);
+    Edit_m1.Text := FloatToStr(m1);      // Заполнение поля ввода.
     Edit_m2.Text := FloatToStr(m2);
     Edit_r.Text  := FloatToStr(r);
 
@@ -215,12 +216,13 @@ procedure TTask.MenuItemOpenReportClick(Sender: TObject);
 var
   ReportText: string; // Переменная для хранения загруженного текста отчёта.
 begin
-  if OpenDialog.Execute then
+  if OpenDialog.Execute then // Открывает окно Windows и возвращает 2 значения:
+                             // true - Открыть (запуск кода), false - Отмена.
   begin
     try
       uController.LoadReport(OpenDialog.FileName, ReportText); // Загрузка текста из файла в переменную.
     except
-      on E: Exception do
+      on E: Exception do     // Блок обработки ошибок.
       begin
         Label_res.Caption := '❌ Ошибка: ' + E.Message;
         Label_res.Font.Color := clRed;
@@ -231,7 +233,7 @@ begin
       end;
     end;
 
-    MemoHistory.Lines.Text := ReportText; // Присвоение загруженного текста компоненту Memo.
+    MemoHistory.Lines.Text := ReportText; // Вывод отчёта в Memo.
 
     Label_res.Caption := '✔ Отчёт успешно загружен!';
     Label_res.Font.Color := clGreen;
@@ -246,18 +248,18 @@ end;
 // Очищает поля ввода. результат и историю.
 procedure TTask.ButtonClearClick(Sender: TObject);
 begin
-  Edit_m1.Clear;
+  Edit_m1.Clear;             // Очистка полей.
   Edit_m2.Clear;
   Edit_r.Clear;
-  Label_res.Caption := '';
-  MemoHistory.Lines.Clear;
+  Label_res.Caption := '';   // Очистка ответа.
+  MemoHistory.Lines.Clear;   // Очистка отчёта.
 end;
 
 
 // Выход из программы.
 procedure TTask.ActionExitExecute(Sender: TObject);
 begin
-  Close;
+  Close;                     // Закрытие программы.
 end;
 
 
@@ -283,18 +285,19 @@ end;
 // Показывает TFormHotkeys с горячими клавишами.
 procedure TTask.MenuItemRef_HotkeysClick(Sender: TObject);
 begin
-  if not Assigned(FormHotkeys) then
-    Application.CreateForm(TFormHotkeys, FormHotkeys);
+  if not Assigned(FormHotkeys) then       // Проверка нахождения FormHotkeys в памяти.
+                                          // true - да, false - нет.
+    Application.CreateForm(TFormHotkeys, FormHotkeys); // false - создаём её.
 
-  if FormHotkeys.Visible then
-  begin
+  if FormHotkeys.Visible then             // Проверка на видимость FormHotkeys.
+  begin                                   // true - скрываем ее.
     FormHotkeys.Hide;
   end
-  else
+  else                                    // иначе (false). настраиваем её позицию.
   begin
-    FormHotkeys.Left := Task.Left + Task.Width;
-    FormHotkeys.Top := Task.Top;
-    FormHotkeys.Show;
+    FormHotkeys.Left := Task.Left + Task.Width;        // Справа от главного окна.
+    FormHotkeys.Top := Task.Top;                       // Сверху от главного окна.
+    FormHotkeys.Show;                                  // Показать.
     MessageBeep(MB_OK);
   end;
 end;
